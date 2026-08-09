@@ -77,7 +77,7 @@ Each task references the design doc — read the named section first for full co
 
 ## Phase 2: The portfolio (spec §8–9, migration step 4 — v1's first usable output, no gate)
 
-### [2A-1] [parallel-after:1A-1] [ ] P1: `ops-portfolio.py` core — registry walk and local columns
+### [2A-1] [parallel-after:1A-1] [x] P1: `ops-portfolio.py` core — registry walk and local columns
 **Files**: `scripts/ops-portfolio.py`
 
 **Instructions**:
@@ -93,7 +93,7 @@ Each task references the design doc — read the named section first for full co
 
 ---
 
-### [2A-2] [parallel-after:2A-1] [ ] P1: `ops-portfolio.py` — clock, budget, and unannounced-release columns
+### [2A-2] [parallel-after:2A-1] [x] P1: `ops-portfolio.py` — clock, budget, and unannounced-release columns
 **Files**: `scripts/ops-portfolio.py`
 
 **Instructions**:
@@ -109,7 +109,7 @@ Each task references the design doc — read the named section first for full co
 
 ---
 
-### [2A-3] [parallel-after:2A-1] [ ] P2: `/ops-status` — the verdict skill
+### [2A-3] [parallel-after:2A-1] [x] P2: `/ops-status` — the verdict skill
 **Files**: `skills/ops-status/SKILL.md`
 
 **Instructions**:

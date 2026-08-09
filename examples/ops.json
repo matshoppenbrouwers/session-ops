@@ -1,0 +1,7 @@
+{
+  "workspace": "/home/mats/ops",
+  "budget": { "max_ci_runs_per_day": 12, "monthly_usd": null },
+  "units": {
+    "/abs/path/to/repo": { "repo": "owner/name", "kind": "code", "cadence": "0 6 * * 1-5" }
+  }
+}

@@ -1,0 +1,8 @@
+# Workspace artifacts — generated state never enters this repo (spec §4).
+# The workspace lives outside the repo; these patterns are a safety net.
+PORTFOLIO.md
+runs.jsonl
+drafts/
+ops.json
+!examples/ops.json
+.ops/

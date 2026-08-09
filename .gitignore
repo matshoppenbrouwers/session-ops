@@ -6,3 +6,7 @@ drafts/
 ops.json
 !examples/ops.json
 .ops/
+
+# Python bytecode
+__pycache__/
+*.pyc

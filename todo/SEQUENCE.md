@@ -7,7 +7,7 @@ breakdown. To work the next item, say "implement the next task" (or run /session
 
 Add entries with `/session-add-task` or `/session-gatekeeper`. Prepare raw ones with `/session-groom`.
 
-- [ ] SEQ-001 P1: v1 Phase 1 — repo scaffold + /ops-init → todo/2026-08-09-v1-implementation.md#1A-1
+- [x] SEQ-001 P1: v1 Phase 1 — repo scaffold + /ops-init → todo/2026-08-09-v1-implementation.md#1A-1
 - [ ] SEQ-002 P1: v1 Phase 2 — ops-portfolio.py + /ops-status, tested against session-flow and session-scribe → todo/2026-08-09-v1-implementation.md#2A-1
 - [ ] SEQ-003 P2: v1 Phase 3 — inbox convention + /ops-capture → todo/2026-08-09-v1-implementation.md#3A-1
 - [ ] SEQ-004 P1: v1 Phase 4 — guard/heartbeat scripts, workflow templates, /ops-enroll → todo/2026-08-09-v1-implementation.md#4A-1

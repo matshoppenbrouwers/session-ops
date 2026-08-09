@@ -42,7 +42,7 @@ Each task references the design doc — read the named section first for full co
 
 ## Phase 1: Repo scaffold and registry (spec §4, migration steps 2–3)
 
-### [1A-1] [seq] [ ] P1: Scaffold the public plugin repo
+### [1A-1] [seq] [x] P1: Scaffold the public plugin repo
 **Files**: `.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json`, `LICENSE`, `README.md`, `.gitignore`, `examples/ops.json`, `skills/ops-init/SKILL.md`, `skills/ops-enroll/SKILL.md`, `skills/ops-capture/SKILL.md`, `skills/ops-status/SKILL.md`, `skills/ops-announce/SKILL.md` (deliberately over the 5-file guideline: one mechanical scaffold commit, mirroring session-flow's layout)
 
 **Instructions**:
@@ -59,7 +59,7 @@ Each task references the design doc — read the named section first for full co
 
 ---
 
-### [1A-2] [parallel-after:1A-1] [ ] P1: `/ops-init` — registry, workspace, budget, style-pack scaffold
+### [1A-2] [parallel-after:1A-1] [x] P1: `/ops-init` — registry, workspace, budget, style-pack scaffold
 **Files**: `skills/ops-init/SKILL.md`
 
 **Instructions**:

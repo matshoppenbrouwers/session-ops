@@ -1,6 +1,6 @@
 {
   "name": "session-ops",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Multi-repo operations layer for Claude Code, companion to session-flow. A 5-skill set covering the ops loop for a one-person software factory: registry + private workspace init, per-repo enrollment into a hardened two-workflow GitHub Actions clock (event-driven issue triage + slow daily sweep), raw-idea capture into a per-unit inbox, a deterministic multi-repo portfolio with staleness/quota/escalation columns, and draft-only release announcements. v1 triages and drafts; it never implements or publishes.",
   "author": {
     "name": "hoponthestack",

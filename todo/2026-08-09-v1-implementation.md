@@ -279,6 +279,8 @@ Each task references the design doc — read the named section first for full co
 
 **Note (2026-08-10)**: shipped ahead of migration step 9's ordering. 4B-1 and 6A-2 are operator-in-the-loop and 6A-1 waits on session-flow SEQ-001, so the release covers everything installable today and states the outstanding validation plainly (README "Status", CHANGELOG "Notes"). Nothing in 0.1.0 depends on enablement: both templates ship dispatch-only for every user, which is the same posture 4B-1 tests. When 4B-1 and 6A-2 land, the follow-up is a 0.1.1/0.2.0 entry, not a rewrite of this one.
 
+**Outstanding**: the `0.1.0` tag is not yet on the remote. The session that shipped the release could push branches but got `HTTP 403` on `refs/tags/*`, so the tag needs cutting from a machine with full push rights: `git tag -a 0.1.0 <merge commit> && git push origin 0.1.0`. Everything else in this task is on `main`.
+
 ---
 
 ## Success Criteria

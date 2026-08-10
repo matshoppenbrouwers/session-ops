@@ -264,7 +264,7 @@ Each task references the design doc — read the named section first for full co
 
 ## Phase 7: Docs and release (migration step 9)
 
-### [7A-1] [seq] [ ] P1: README, CHANGELOG 0.1.0, version bump, tag
+### [7A-1] [seq] [x] P1: README, CHANGELOG 0.1.0, version bump, tag
 **Files**: `README.md`, `CHANGELOG.md`, `.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json`
 
 **Instructions**:
@@ -276,6 +276,8 @@ Each task references the design doc — read the named section first for full co
 **Accept**: Both manifests read 0.1.0; CHANGELOG covers every shipped task; README matches shipped behaviour with no stale counts.
 
 **Test**: `grep -q '"version": "0.1.0"' .claude-plugin/plugin.json && grep -q "0.1.0" CHANGELOG.md && ! grep -rq '"version": "0.0.1"' .claude-plugin/`
+
+**Note (2026-08-10)**: shipped ahead of migration step 9's ordering. 4B-1 and 6A-2 are operator-in-the-loop and 6A-1 waits on session-flow SEQ-001, so the release covers everything installable today and states the outstanding validation plainly (README "Status", CHANGELOG "Notes"). Nothing in 0.1.0 depends on enablement: both templates ship dispatch-only for every user, which is the same posture 4B-1 tests. When 4B-1 and 6A-2 land, the follow-up is a 0.1.1/0.2.0 entry, not a rewrite of this one.
 
 ---
 

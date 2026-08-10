@@ -12,6 +12,6 @@ Add entries with `/session-add-task` or `/session-gatekeeper`. Prepare raw ones 
 - [x] SEQ-003 P2: v1 Phase 3 — inbox convention + /ops-capture → todo/2026-08-09-v1-implementation.md#3A-1
 - [x] SEQ-004 P1: v1 Phase 4 — guard/heartbeat scripts, workflow templates, /ops-enroll → todo/2026-08-09-v1-implementation.md#4A-1
 - [ ] SEQ-005 P1: v1 Phase 4B — live test by manual dispatch (user gate — run with the operator) → todo/2026-08-09-v1-implementation.md#4B-1
-- [ ] SEQ-006 P2: v1 Phase 5 — /ops-announce, interactive drafts-first → todo/2026-08-09-v1-implementation.md#5A-1
+- [x] SEQ-006 P2: v1 Phase 5 — /ops-announce, interactive drafts-first → todo/2026-08-09-v1-implementation.md#5A-1
 - [ ] SEQ-007 P2: v1 Phase 6 — gatekeeper inbox PR + trigger enablement (blocked by session-flow SEQ-001) → todo/2026-08-09-v1-implementation.md#6A-1
 - [ ] SEQ-008 P1: v1 Phase 7 — README, CHANGELOG 0.1.0, version bump, tag → todo/2026-08-09-v1-implementation.md#7A-1

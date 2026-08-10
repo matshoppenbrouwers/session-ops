@@ -212,7 +212,7 @@ Each task references the design doc — read the named section first for full co
 
 ## Phase 5: Announce (spec §10, migration step 7)
 
-### [5A-1] [parallel-after:1A-2] [ ] P2: `/ops-announce` — interactive drafts, the domain-skill contract
+### [5A-1] [parallel-after:1A-2] [x] P2: `/ops-announce` — interactive drafts, the domain-skill contract
 **Files**: `skills/ops-announce/SKILL.md`
 
 **Instructions**:

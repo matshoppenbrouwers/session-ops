@@ -126,7 +126,7 @@ Each task references the design doc — read the named section first for full co
 
 ## Phase 3: The feed (spec §6, migration step 5 — items sit inert until Phase 6, by design)
 
-### [3A-1] [parallel-after:1A-1] [ ] P2: `/ops-capture` and the inbox convention
+### [3A-1] [parallel-after:1A-1] [x] P2: `/ops-capture` and the inbox convention
 **Files**: `skills/ops-capture/SKILL.md`
 
 **Instructions**:

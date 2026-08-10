@@ -145,7 +145,7 @@ Each task references the design doc — read the named section first for full co
 
 ## Phase 4: The clock and escalations (spec §5, §7, Appendix A, migration step 6)
 
-### [4A-1] [parallel-after:1A-1] [ ] P1: Guard and heartbeat scripts
+### [4A-1] [parallel-after:1A-1] [x] P1: Guard and heartbeat scripts
 **Files**: `scripts/ops-guard.sh`, `scripts/ops-heartbeat.sh`
 
 **Instructions**:
@@ -160,7 +160,7 @@ Each task references the design doc — read the named section first for full co
 
 ---
 
-### [4A-2] [parallel-after:1A-1] [ ] P1: The two workflow templates
+### [4A-2] [parallel-after:1A-1] [x] P1: The two workflow templates
 **Files**: `templates/ops-triage.yml`, `templates/ops-sweep.yml`
 
 **Instructions**:
@@ -176,7 +176,7 @@ Each task references the design doc — read the named section first for full co
 
 ---
 
-### [4A-3] [seq] [ ] P1: `/ops-enroll` — full ceremony, single confirm
+### [4A-3] [seq] [x] P1: `/ops-enroll` — full ceremony, single confirm
 **Files**: `skills/ops-enroll/SKILL.md`
 
 **Instructions**:

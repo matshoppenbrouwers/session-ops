@@ -1,4 +1,4 @@
-# ops-template-version: 1
+# ops-template-version: 2
 #
 # Installed by /ops-enroll into .github/workflows/ops-triage.yml.
 # Event-driven triage: one issue per run (spec §5, Appendix A).
@@ -6,6 +6,7 @@
 #
 # Safety shape, all deterministic and outside the agent:
 #   - permissions capped at contents: write, issues: write
+#   - the job is skipped outright for `scribe:mirror` issues (see the job `if:`)
 #   - the quota guard runs before the agent and can skip it (never fails the run)
 #   - timeout-minutes + --max-turns + concurrency-cancel per issue
 #   - --allowedTools is a minimal list: files, git, and issue reads. Nothing else.
@@ -39,6 +40,16 @@ jobs:
   triage:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    # session-scribe's backlog mirror opens one issue per SEQUENCE.md entry and labels
+    # each `scribe:mirror`. Triaging those would re-triage items that came *from*
+    # SEQUENCE.md and can enqueue them back into it, so skip them before anything runs
+    # — not even a quota slot. Filtering on the label, not the author or an `SEQ-`
+    # title prefix: the mirror runs under the same account a human files issues from,
+    # and a human can type `SEQ-NNN` by hand.
+    #
+    # `workflow_dispatch` has no `github.event.issue`, so the expression is false there
+    # and a manual run can still triage a mirrored issue deliberately.
+    if: ${{ !contains(github.event.issue.labels.*.name, 'scribe:mirror') }}
     steps:
       - uses: actions/checkout@v4
 

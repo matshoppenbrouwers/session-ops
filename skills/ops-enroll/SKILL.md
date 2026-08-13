@@ -15,7 +15,7 @@ Install the clock on one unit: two workflow templates, two deterministic scripts
 
 1. **The skill never writes secrets.** It checks whether `CLAUDE_CODE_OAUTH_TOKEN` exists on the repo and tells the user how to set it. It never generates, prints, echoes, or stores a token value — not in a file, not in a commit, not in the transcript.
 2. **Dispatch-only by default.** `schedule:` stays commented out unless the user explicitly says yes to the live trial (Step 6). Silence, hesitation, or "sure, whatever you think" is not a yes.
-3. **A unit that isn't registered, or doesn't follow session-flow conventions, is not enrolled.** No `.session-flow.json`, no SEQUENCE.md, or no registry entry → stop, say what's missing, install nothing. The degradation matrix is explicit: workflows are not installed into a unit gatekeeper cannot work in.
+3. **A unit that isn't registered, or doesn't follow session-flow conventions, is not enrolled.** No `.session-flow.json`, no SEQUENCE.md tracked in git, or no registry entry → stop, say what's missing, install nothing. The degradation matrix is explicit: workflows are not installed into a unit gatekeeper cannot work in.
 4. **The registry is read-only here.** `/ops-init` owns the registry write. Enroll reads `~/.claude/ops.json` and never edits it — to register a unit or change its cadence, re-run `/ops-init`.
 5. **One unit per invocation.** No fan-out across units: real blast radius, no current need (spec §14).
 
@@ -34,10 +34,26 @@ Then verify the unit follows session-flow conventions:
 | Check | On failure |
 |---|---|
 | `.session-flow.json` present | Stop: "not a session-flow unit — workflows are not installed." |
-| SEQUENCE.md present (at `paths.sequence`, else `{todo}/SEQUENCE.md`) | Same — gatekeeper has nowhere to enqueue. |
+| SEQUENCE.md **tracked in git** (at `paths.sequence`, else `{todo}/SEQUENCE.md`) — `git ls-files --error-unmatch <path>` | Stop, install nothing (see below). Present-on-disk is not enough: gatekeeper would have nowhere to enqueue. |
+| `{todo}` **tracked in git** — `git ls-files <todo>` returns at least one path | Same — the sweep could not commit `escalations.md`. |
 | Clean working tree, on the default branch | Stop and ask the user to commit or stash first. |
 
 Resolve `{todo}` from `.session-flow.json` `paths.todo`, defaulting to `_devdocs/todo/`.
+
+**Why tracked, not present.** CI checks out only what git tracks. A repo that gitignores its
+docs root — a reasonable thing to do on a public repo — enrols cleanly on a filesystem check
+and then fails every run: nothing to enqueue into, no `escalations.md` to append to, no inbox
+to sweep. `git ls-files --error-unmatch` is the precise test because it exits non-zero when the
+file is untracked *or* ignored, which is exactly the condition CI cannot recover from. Name the
+cause and both ways out:
+
+> "`_devdocs/todo/SEQUENCE.md` is present but not tracked by git (matched by `.gitignore:2 _devdocs/`).
+> CI checks out only tracked files, so the workflows would have nothing to write to. Un-ignore the
+> sequence layer, or enrol a different unit."
+
+Report the matching ignore rule when `git check-ignore -v <path>` gives one. **Do not offer to edit
+the user's `.gitignore`** — what a repo publishes is their call, and on a public repo the exclusion
+may be deliberate.
 
 ### Step 2: Check the auth secret
 
@@ -152,6 +168,7 @@ A CI gatekeeper holds repo write access plus untrusted issue text plus a write-c
 - **No registry or workspace** → stop and say "run /ops-init".
 - **Unit not registered** → list the registered units, install nothing.
 - **Not a session-flow unit** (no `.session-flow.json` or no SEQUENCE.md) → stop, install nothing.
+- **Sequence layer present but untracked or gitignored** (`git ls-files --error-unmatch` fails on SEQUENCE.md, or `{todo}` has no tracked files) → stop, install nothing. Name the file, the ignore rule that matched, and the two ways out: un-ignore the sequence layer, or enrol a different unit. Never edit the user's `.gitignore`.
 - **`CLAUDE_CODE_OAUTH_TOKEN` missing** → install anyway, state clearly that runs will fail until the secret is set, and give the two commands.
 - **Dashboard issue can't be created or pinned** (permissions, issues disabled) → keep going; `escalations.md` still works and stays authoritative. Only the phone-visible render is missing.
 - **Push fails** → the enrolment is committed locally and the skill says so; nothing runs until it's pushed.

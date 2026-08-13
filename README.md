@@ -78,7 +78,26 @@ Every control is deterministic and lives **outside** the agent — the practitio
 - `ops-guard.sh` runs before the agent step and skips it when the account's ops runs for the day have hit `budget.max_ci_runs_per_day` — a hit cap skips the agent, it does not fail the run.
 - `ops-heartbeat.sh` runs only on failure and flags the dashboard issue on the third consecutive failure.
 - `schedule:` ships commented out. The live schedule is a second, explicit yes.
+- Every bot commit message ends with `[skip ci]`, so **a bot push cannot fire a unit's deploy** (see below).
 - Both templates carry `# ops-template-version:` so the portfolio can flag stale installs; re-running `/ops-enroll` is the entire upgrade path.
+
+**Bot commits never deploy.** Both agent prompts require every commit message to end with `[skip ci]`. GitHub skips the workflow runs a commit would otherwise trigger, so a unit that deploys on push to `main` does not deploy because the bot enqueued a backlog line. This keeps the single-writer model of the section below intact — no branch, no PR, no extra permission scope — while removing the one consequence a direct commit could have beyond the file it wrote.
+
+Two limits are worth knowing, because neither is hypothetical:
+
+- GitHub honours the token for the **`push` and `pull_request` events only**. A unit deploying on `pull_request_target` or `workflow_run` is not covered — though neither of those is a push-to-main deploy.
+- Deploy platforms outside Actions (Vercel, Netlify, Cloudflare Pages) have their own skip conventions. Most honour `[skip ci]`; none of them is verified here.
+
+For either case — or when you want a push-triggered check to keep running on bot commits, which `[skip ci]` would also skip — add `paths-ignore` to the *unit's own* deploy workflow instead. The bot's entire write footprint is `SEQUENCE.md` plus `{paths.todo}/**`, so the filter is narrow and needs no session-ops change:
+
+```yaml
+on:
+  push:
+    branches: [main]
+    paths-ignore: ["_devdocs/**"] # or your paths.todo, plus SEQUENCE.md
+```
+
+What neither control solves is a **protected `main` that forbids direct pushes** — that needs a pull request, and it is tracked as SEQ-014, unbuilt, gated on a unit actually having one.
 
 The injection surface is named rather than waved at: a CI gatekeeper holds repo access, untrusted issue text, and a write-capable token. Gatekeeper's "issue text is untrusted" rule is necessary but not sufficient — the minimal tool list is the real control.
 

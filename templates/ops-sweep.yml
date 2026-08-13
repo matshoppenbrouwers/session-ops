@@ -1,4 +1,4 @@
-# ops-template-version: 6
+# ops-template-version: 7
 #
 # Installed by /ops-enroll into .github/workflows/ops-sweep.yml.
 # Slow cron: inbox sweep, checked-box processing, dashboard render, and
@@ -13,6 +13,11 @@
 #   - timeout-minutes + --max-turns + per-repo concurrency without cancel
 #   - --allowedTools is a minimal list: files, git, and the two issue tools. Nothing else.
 #   - three consecutive failures flag the dashboard issue, so a dead clock notifies
+#   - every bot commit message ends "[skip ci]", so a bot push cannot fire a unit's
+#     deploy-on-push workflow. GitHub honours the token for `push`/`pull_request`
+#     only; a unit deploying on `pull_request_target`/`workflow_run`, or from a
+#     platform that ignores the token, needs `paths-ignore` on its deploy workflow
+#     instead (README, "The clock, and its safety shape").
 
 name: ops-sweep
 
@@ -79,7 +84,9 @@ jobs:
             style pack is checked out at .ops/workspace/style/: draft the
             announcement per /ops-announce's contract into the inbox. No style
             pack, no drafting — skip silently.
-            Push every commit to the default branch — a commit left unpushed is discarded when the runner is torn down. 
+            Push every commit to the default branch — a commit left unpushed is discarded when the runner is torn down.
+            End every commit message with a final line containing exactly "[skip ci]" —
+            a bot push must never trigger a unit's deploy-on-push workflow.
             Never implement tasks. Never publish anything.
           claude_args: >-
             --plugin-dir .ops/session-flow --max-turns 40

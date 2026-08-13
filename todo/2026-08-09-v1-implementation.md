@@ -208,6 +208,56 @@ Each task references the design doc — read the named section first for full co
 
 **Test**: user-run — the recorded run links and commit SHAs in this file are the evidence.
 
+**Verdict (2026-08-13): PASS, after five blocking defects found and fixed.**
+
+Enrolled unit: `frameworkreboot/cropfolio-rep` (private). session-scribe was the
+planned candidate and had to be abandoned — it gitignores `_devdocs/`, so CI checks
+out a tree with no SEQUENCE.md at all (finding 2). session-ops and session-flow both
+lack `.session-flow.json`, so neither is enrollable either.
+
+| Check | Result | Evidence |
+|---|---|---|
+| Composition (auth, `--plugin-dir`, gatekeeper boots) | PASS | run 31685131271 |
+| Triage: trivial → SEQUENCE | PASS | run 31686549965 → `3fcd8f0`, SEQ-001 + breakdown + run report |
+| Triage: architectural → escalations, no SEQUENCE write | PASS | run 31686766713 → `4326649`, ESC-001 citing `shared/schema.ts:179`, `AD-auth-01`, PRD FR-01–13 |
+| Dashboard re-renders from `escalations.md` | PASS | run 31686949166, issue #30 body went from empty to ESC-001 |
+| Checked box → enqueue once, remove line | PASS | run 31687191102 → `37b98b0`, SEQ-002 `(needs breakdown)`, escalations cleared |
+| Third dispatch does not re-process | PASS | run 31687507324, SEQ-002 count stays 1, no commit |
+| Guard skip at cap | PASS | run 31687791302, `ok=false count=12 cap=12 reason=cap-reached`, agent skipped, run green, repo untouched |
+| Heartbeat restraint (bonus) | PASS | run 31684955156, `streak is 1, threshold is 3 — no dashboard write` |
+| Event trigger `issues:[opened]` (bonus) | PASS | issues #31 and #32 auto-fired triage |
+
+**Nothing in this task worked on the first attempt.** Five defects each independently
+prevented session-ops from doing anything at all, and every one was invisible to static
+review — four of the five produced a *green* run:
+
+1. CRLF line endings — `ops-guard.sh` was a bash syntax error on ubuntu-latest, exit 2,
+   empty `$GITHUB_OUTPUT`. Fixed `bf9a3a1`.
+2. `actions: read` absent — a `permissions:` block sets unlisted scopes to `none`, so the
+   guard could never read the run API and failed closed on every run of every repo.
+   Green, agent never started. Fixed `c0d6bb5`.
+3. `id-token: write` absent — claude-code-action could not fetch an OIDC token.
+   Fixed `46008f8`.
+4. `mcp__github__issue_read` / `issue_write` do not exist. The server was installed (the
+   prefix matched) so the real tools were present but not permitted: 6 permission denials,
+   0 writes, `is_error: false`. Fixed `7394a81`.
+5. Both prompts said "commit" and never "push". The agent did everything correctly and
+   committed `a0f1ae1` to the runner's ephemeral checkout; `git push` was never called in
+   any run. Green run, agent reports a SHA, quota spent, repository untouched.
+   Fixed `f9c77b0`.
+
+The common thread is that the design's safety property — "`permissions:` capped at
+`contents: write, issues: write` and nothing more", asserted in spec §5, in ops-enroll's
+SKILL.md, and in 4A-2's own acceptance test — is what broke defects 2 and 3. Every check
+verified the permissions were *narrow*; none verified they were *sufficient*.
+
+Judgement quality, once it ran, was good: the trivial issue was enqueued with a real file
+and line reference, the architectural one was escalated with grounding in the actual schema
+and decision records, and gatekeeper flagged that the issue's own "icon-only" claim was
+imprecise rather than accepting the framing it was given.
+
+Open findings not fixed here are logged as SEQ-009 through SEQ-013.
+
 ---
 
 ## Phase 5: Announce (spec §10, migration step 7)

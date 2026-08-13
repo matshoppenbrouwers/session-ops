@@ -1,6 +1,6 @@
 # SEQ-011: `/ops-enroll` must substitute `{todo}` when installing
 
-**Status**: [ ]
+**Status**: [x]
 **Priority**: P1 (raised from P2 — this is a release blocker, see below)
 **Sequence**: todo/SEQUENCE.md
 **Origin**: SEQ-005 / 4B-1 live test, 2026-08-13

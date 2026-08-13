@@ -105,10 +105,12 @@ In order, then one commit and push:
 
 1. **Copy both templates** into `.github/workflows/`, resolving `templates/` via `${CLAUDE_PLUGIN_ROOT}` where available.
 2. **Copy both scripts** to `.github/ops-guard.sh` and `.github/ops-heartbeat.sh`, and `chmod +x` them.
-3. **Bake the workflow env** into the `quota guard` step of both workflows, from the registry — CI cannot read `~/.claude/ops.json`, so these values only reach it by being written into the YAML:
-   - `OPS_MAX_RUNS_PER_DAY` ← `budget.max_ci_runs_per_day`
-   - `OPS_ENROLLED_REPOS` ← every `repo` value in `units` (space-separated). A repo-scoped token cannot read siblings; the guard degrades to the readable subset and logs a warning, which is why the cap is sized account-wide but enforced best-effort.
-   - `OPS_DASHBOARD_ISSUE` ← the dashboard issue number, added to the heartbeat step's `env` in `ops-sweep.yml`.
+3. **Bake the install-time values** into the copied workflows. Everything CI needs is written into the YAML here, because CI reads nothing else:
+   - **The env** in the `quota guard` step of both workflows, from the registry — CI cannot read `~/.claude/ops.json`, so these values only reach it by being written into the YAML:
+     - `OPS_MAX_RUNS_PER_DAY` ← `budget.max_ci_runs_per_day`
+     - `OPS_ENROLLED_REPOS` ← every `repo` value in `units` (space-separated). A repo-scoped token cannot read siblings; the guard degrades to the readable subset and logs a warning, which is why the cap is sized account-wide but enforced best-effort.
+     - `OPS_DASHBOARD_ISSUE` ← the dashboard issue number, added to the heartbeat step's `env` in `ops-sweep.yml`.
+   - **Every `{todo}` placeholder** in the copied files, replaced with the unit's resolved todo path from Step 1 (`.session-flow.json` `paths.todo`, default `_devdocs/todo`). The templates' agent prompts carry `{todo}` in `ops-sweep.yml` (the inbox to sweep) and `ops-triage.yml` (the escalations file) — resolve it at install time so the prompt CI receives names a real path, rather than leaving the agent to infer one.
 4. **Write the unit's `cadence`** from the registry into the sweep's commented schedule line: `#   - cron: "{cadence}"`. Commented now; Step 6 decides whether it stays that way.
 5. **Create `{todo}/escalations.md`** if absent, with the format header and nothing else:
 
@@ -125,7 +127,8 @@ In order, then one commit and push:
    ```
 
 6. **Create and pin the dashboard issue** — title `ops dashboard: {name}`, label `ops-dashboard`, body rendered from `escalations.md` (empty on day one, saying so), then pin it. This is the phone-visible render; the file stays the source of truth.
-7. **Commit and push** everything in one commit (`Enroll {name} in session-ops (dispatch-only)`), retrying a couple of times on transient network failure.
+7. **Verify the substitution before committing** — `! grep -rq "{todo}" .github/`. A leftover placeholder is a **failed install**, not a warning: stop, say which file still carries it, and commit nothing.
+8. **Commit and push** everything in one commit (`Enroll {name} in session-ops (dispatch-only)`), retrying a couple of times on transient network failure.
 
 Report what landed and point at the next step: a manual `workflow_dispatch` of `ops-triage` against one throwaway issue is how the composition gets verified before anything runs unattended.
 
@@ -170,6 +173,7 @@ A CI gatekeeper holds repo write access plus untrusted issue text plus a write-c
 - **Not a session-flow unit** (no `.session-flow.json` or no SEQUENCE.md) → stop, install nothing.
 - **Sequence layer present but untracked or gitignored** (`git ls-files --error-unmatch` fails on SEQUENCE.md, or `{todo}` has no tracked files) → stop, install nothing. Name the file, the ignore rule that matched, and the two ways out: un-ignore the sequence layer, or enrol a different unit. Never edit the user's `.gitignore`.
 - **`CLAUDE_CODE_OAUTH_TOKEN` missing** → install anyway, state clearly that runs will fail until the secret is set, and give the two commands.
+- **A `{todo}` placeholder survives the copy** (`grep -rq "{todo}" .github/` matches) → failed install: stop before committing, name the file, install nothing. An unresolved placeholder means CI is told to sweep a directory named `{todo}`.
 - **Dashboard issue can't be created or pinned** (permissions, issues disabled) → keep going; `escalations.md` still works and stays authoritative. Only the phone-visible render is missing.
 - **Push fails** → the enrolment is committed locally and the skill says so; nothing runs until it's pushed.
 - **Workspace not a private repo** → normal. `vars.OPS_WORKSPACE_REPO` stays unset, the sweep's workspace checkout is skipped, and auto-drafting never runs — no voice on file, no unprompted prose.

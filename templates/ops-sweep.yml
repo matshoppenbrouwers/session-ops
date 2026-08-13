@@ -1,4 +1,4 @@
-# ops-template-version: 4
+# ops-template-version: 5
 #
 # Installed by /ops-enroll into .github/workflows/ops-sweep.yml.
 # Slow cron: inbox sweep, checked-box processing, dashboard render, and
@@ -84,6 +84,7 @@ jobs:
             style pack is checked out at .ops/workspace/style/: draft the
             announcement per /ops-announce's contract into the inbox. No style
             pack, no drafting — skip silently.
+            Push every commit to the default branch — a commit left unpushed is discarded when the runner is torn down. 
             Never implement tasks. Never publish anything.
           claude_args: >-
             --plugin-dir .ops/session-flow --max-turns 40

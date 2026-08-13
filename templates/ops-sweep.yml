@@ -1,4 +1,4 @@
-# ops-template-version: 3
+# ops-template-version: 4
 #
 # Installed by /ops-enroll into .github/workflows/ops-sweep.yml.
 # Slow cron: inbox sweep, checked-box processing, dashboard render, and
@@ -87,7 +87,7 @@ jobs:
             Never implement tasks. Never publish anything.
           claude_args: >-
             --plugin-dir .ops/session-flow --max-turns 40
-            --allowedTools "Read,Grep,Glob,Edit,Write,Bash(git:*),mcp__github__issue_read,mcp__github__issue_write"
+            --allowedTools "Read,Grep,Glob,Edit,Write,Bash(git:*),mcp__github__get_issue,mcp__github__update_issue"
 
       # 3rd consecutive failed sweep → prepend a ⚠ line to the dashboard issue, so a
       # dead clock reaches the user as a notification instead of waiting for /ops-status.

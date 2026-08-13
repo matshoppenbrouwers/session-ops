@@ -1,4 +1,4 @@
-# ops-template-version: 2
+# ops-template-version: 3
 #
 # Installed by /ops-enroll into .github/workflows/ops-sweep.yml.
 # Slow cron: inbox sweep, checked-box processing, dashboard render, and
@@ -30,6 +30,7 @@ permissions:
   contents: write
   issues: write
   actions: read # ops-guard.sh counts today's runs via the workflow-run API
+  id-token: write # claude-code-action@v1 exchanges an OIDC token to authenticate
 
 concurrency:
   group: ops-sweep-${{ github.repository }}

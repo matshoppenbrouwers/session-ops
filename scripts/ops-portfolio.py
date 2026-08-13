@@ -40,7 +40,7 @@ STATUS_ENUM = ("complete", "timeout", "stalled", "max-turns", "tool-failure", "e
 OPS_WORKFLOWS = ("ops-triage.yml", "ops-sweep.yml")
 
 TEMPLATE_VERSION_RE = re.compile(r"#\s*ops-template-version:\s*(\d+)")
-ENTRY_RE = re.compile(r"^- \[( |x)\] (.*)$")
+ENTRY_RE = re.compile(r"^- \[([^\]]*)\] (.*)$")
 LINK_RE = re.compile(r"→\s*(\S+)")
 VERSION_RE = re.compile(r"\b(\d+\.\d+(?:\.\d+)?)\b")
 
@@ -118,23 +118,34 @@ def sequence_path(unit_path):
 def backlog_counts(unit_path):
     """Count SEQUENCE.md entries per session-status Step 2b.
 
-    total = `- [ ]` + `- [x]` entries; done = `[x]`; ready = open with a `→`
-    link to an existing file; needs-breakdown = open with trailing
-    `(needs breakdown)` or a missing/dangling link.
-    Returns (done, total, ready, needs_breakdown) or None when absent.
+    total = every `- [token]` entry, whatever the token; done = `[x]`; ready =
+    open (`[ ]`) with a `→` link to an existing file; needs-breakdown = open
+    with trailing `(needs breakdown)` or a missing/dangling link.
+
+    A token that is neither empty nor `x` (`[DEFERRED]`, `[?]`, …) is a
+    non-standard state session-ops does not interpret: it counts in `total`
+    and in `other`, and in none of done/ready/needs. It is never dropped —
+    the regex captures the token instead of filtering on it, so no entry can
+    go missing from every count.
+
+    Returns (done, total, ready, needs_breakdown, other) or None when absent.
     """
     seq = sequence_path(unit_path)
     if not os.path.isfile(seq):
         return None
-    done = total = ready = needs = 0
+    done = total = ready = needs = other = 0
     with open(seq, encoding="utf-8") as f:
         for line in f:
             m = ENTRY_RE.match(line.rstrip())
             if not m:
                 continue
             total += 1
-            if m.group(1) == "x":
+            token = m.group(1).strip().lower()
+            if token == "x":
                 done += 1
+                continue
+            if token:
+                other += 1
                 continue
             body = m.group(2)
             link = LINK_RE.search(body)
@@ -149,7 +160,7 @@ def backlog_counts(unit_path):
                 needs += 1
             else:
                 ready += 1
-    return done, total, ready, needs
+    return done, total, ready, needs, other
 
 
 def inbox_depth(unit_path):
@@ -330,6 +341,20 @@ def freshness(runs):
     return days, streak
 
 
+def freshness_cell(days, streak):
+    """Render the freshness column, each half independently.
+
+    days and streak fail independently — a unit with no successful run still
+    has a known streak — so each half renders its own value or `n/a`. Only a
+    cell with nothing known at all collapses to a bare `n/a`.
+    """
+    if days == NA and streak == NA:
+        return NA
+    days_s = NA if days == NA else f"{days}d ago"
+    streak_s = NA if streak == NA else f"streak {streak}"
+    return f"{days_s} · {streak_s}"
+
+
 def runs_today(runs):
     """Count of ops runs created today (UTC) in an API run list."""
     today = date.today().isoformat()
@@ -406,8 +431,10 @@ def build_row(unit_path, meta, no_fetch, shipped_versions, workspace):
 
     counts = backlog_counts(unit_path)
     if counts:
-        done, total, ready, needs = counts
+        done, total, ready, needs, other = counts
         backlog = f"{done}/{total}"
+        if other:
+            backlog += f" · {other} other"
         ready_s, needs_s = str(ready), str(needs)
     else:
         backlog = ready_s = needs_s = EMPTY
@@ -433,7 +460,7 @@ def build_row(unit_path, meta, no_fetch, shipped_versions, workspace):
         release or EMPTY,
         activity or EMPTY,
         clock_state(unit_path, shipped_versions),
-        f"{days}d ago · streak {streak}" if days != NA or streak != NA else NA,
+        freshness_cell(days, streak),
         unannounced_release(unit_path, workspace, release),
     ]
 

@@ -1,6 +1,6 @@
 # SEQ-013: Portfolio renders `n/ad ago`, and drops entries with other status tokens
 
-**Status**: [ ]
+**Status**: [x]
 **Priority**: P3
 **Sequence**: todo/SEQUENCE.md
 **Origin**: SEQ-005 / 4B-1 live test, 2026-08-13
@@ -89,4 +89,42 @@ print('PASS')
 "`
 
 Then render against a fixture sequence containing all three token types and confirm
-the counts add up and no cell reads `n/ad ago`.
+the counts add up and no cell reads `n/ad ago`:
+
+```bash
+T=$(mktemp -d) && mkdir -p "$T/ws" "$T/unit/todo/tasks" && cat > "$T/unit/todo/SEQUENCE.md" <<'EOF'
+- [x] SEQ-001 P1: done thing → todo/tasks/0001-a.md
+- [ ] SEQ-002 P1: ready thing → todo/tasks/0001-a.md
+- [ ] SEQ-003 P2: raw thing (needs breakdown)
+- [DEFERRED] SEQ-004 P3: deferred thing → todo/tasks/0001-a.md
+EOF
+touch "$T/unit/todo/tasks/0001-a.md" && python3 -c "
+import json
+json.dump({'workspace':'$T/ws','budget':{'max_ci_runs_per_day':12,'monthly_usd':None},
+           'units':{'$T/unit':{'repo':'x/y','kind':'code'}}}, open('$T/ops.json','w'))"
+python3 scripts/ops-portfolio.py --registry "$T/ops.json" --no-fetch && python3 -c "
+row = [l for l in open('$T/ws/PORTFOLIO.md', encoding='utf-8') if l.startswith('| unit ')][0]
+c = [x.strip() for x in row.strip('|\n').split('|')]
+assert 'n/ad' not in row, row
+assert (c[2], c[3], c[4]) == ('1/4 · 1 other', '1', '1'), c[2:5]
+print('PASS')"; rm -rf "$T"
+```
+
+## Done (2026-08-13)
+
+- **Bug A**: extracted `freshness_cell(days, streak)` — each half renders its own
+  value or `NA` independently; only a wholly-unknown cell collapses to a bare `n/a`.
+  Verified across all four combinations: `n/a · streak 0`, `3d ago · streak 0`,
+  `0d ago · n/a`, `n/a`. Audited the other `build_row` columns — no other column
+  shares the all-or-nothing pattern (every other guard covers a single field, and
+  `done`/`total` are jointly known from one read).
+- **Bug B**: `ENTRY_RE` widened to `^- \[([^\]]*)\] (.*)$` and the token is now
+  branched on rather than filtered by. A non-standard token counts in `total` and in
+  a new `other` count, and in none of done/ready/needs — the session-status Step 2b
+  reading. `backlog_counts` returns a 5-tuple; the Backlog cell appends `· N other`
+  when non-zero, so a deferred entry is visible in the row. Rule documented in
+  README "The portfolio".
+- Fixture render: `1/4 · 1 other`, ready 1, needs 1 — all four entries accounted for.
+  Against the real session-scribe backlog: `done=31 total=32 ready=0 needs=0 other=1`
+  (was silently 31), sum of parts == total.
+- Still stdlib-only.

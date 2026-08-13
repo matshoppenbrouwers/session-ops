@@ -98,10 +98,10 @@ The file is the source of truth; the pinned dashboard issue is its render, rewri
 
 `scripts/ops-portfolio.py` walks the registry and regenerates `{workspace}/PORTFOLIO.md` **whole** — a write-only output, never hand-edited — plus one `runs.jsonl` line per run. Per unit it reports:
 
-- backlog done/total · ready · needs-breakdown (session-flow's own counting rules)
+- backlog done/total · ready · needs-breakdown (session-flow's own counting rules). `total` is *every* entry line, whatever sits in the box: a non-standard status token — `- [DEFERRED]`, `- [?]` — counts in `total` and is reported as `· N other`, and in none of done/ready/needs, because session-ops does not interpret states session-flow has not defined. No entry ever disappears from all the counts at once.
 - inbox depth · escalations awaiting
 - last release (top CHANGELOG version, falling back to the latest tag) · last activity
-- clock state: workflows present/scheduled, stale template, days since last success, current failure streak
+- clock state: workflows present/scheduled, stale template, days since last success, current failure streak. The two freshness halves render independently — a unit with a failing clock and no successful run yet reads `n/a · streak 3`, not a fabricated day count.
 - budget: today's ops CI runs against the cap
 - unannounced release: a release newer than any `release-announce` item and the last `announce` run
 

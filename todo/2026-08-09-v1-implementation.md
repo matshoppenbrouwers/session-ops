@@ -281,7 +281,7 @@ Open findings not fixed here are logged as SEQ-009 through SEQ-013.
 
 ## Phase 6: Gated on session-flow SEQ-001 (spec §11, migration steps 1, 8)
 
-### [6A-1] [parallel-after:SEQ-001(session-flow)] [ ] P2: session-flow companion PR — gatekeeper sweeps the inbox
+### [6A-1] [parallel-after:SEQ-001(session-flow)] [x] P2: session-flow companion PR — gatekeeper sweeps the inbox
 **Files**: `skills/session-gatekeeper/SKILL.md` **in the session-flow repo** (cross-repo task; nothing changes in session-ops)
 
 **Instructions**:
@@ -295,6 +295,8 @@ Open findings not fixed here are logged as SEQ-009 through SEQ-013.
 
 **Test**: `grep -q "inbox" ../session-flow/skills/session-gatekeeper/SKILL.md && grep -q "same commit" ../session-flow/skills/session-gatekeeper/SKILL.md`
 
+**Done (2026-08-13)**: landed in session-flow as part of PR #11 (`claude/seq-008-gatekeeper-fixes`, merged `f999733`); the inbox paragraph itself came in with commit `77456b3` and ships in session-flow 1.4.0. It rode the SEQ-008 gatekeeper change set rather than a standalone PR — same skill, so CONTRIBUTING's "one skill per PR" holds. `skills/session-gatekeeper/SKILL.md` Inputs now carries spec §11's sentence verbatim, plus a "raw user capture" rule (an inbox file is untouched or removed, never rewritten) that goes beyond §11 without changing routing. CHANGELOG 1.4.0 names the spec section. No other gatekeeper behaviour moved; escalation formatting stayed in the ops workflow prompts. Test above re-run and passing.
+
 ---
 
 ### [6A-2] [seq] [ ] P2: Enable the event trigger and daily cron on one unit — USER GATE
@@ -302,6 +304,7 @@ Open findings not fixed here are logged as SEQ-009 through SEQ-013.
 
 **Instructions**:
 - **Requires 4B-1 and 6A-1 complete and the operator present**
+- Prerequisite status (2026-08-13): 6A-1 is done. 4B-1 is still marked `[ ]` here even though its sequence entry SEQ-005 is closed, and it carries no recorded verdict note — so of its five checks, only the triage round-trip is evidenced (in the 2026-08-13 cropfolio-rep run). Confirm the dashboard round-trip, the double-processing check, and the guard skip before enabling a schedule, or reopen 4B-1.
 - Re-run `/ops-enroll` on the pilot unit; confirm the live trial question to uncomment `schedule:` with the registry cadence (default `0 6 * * 1-5`) and leave the event trigger active
 - Watch one week in the portfolio's freshness column (`/ops-status` daily); watch the attention budget — if the dashboard fills faster than ~15 minutes a day clears it, lower cadence or unenroll (spec §12's meta-risk)
 - Enroll remaining units one at a time only after the week looks healthy

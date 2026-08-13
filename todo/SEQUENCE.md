@@ -13,7 +13,7 @@ Add entries with `/session-add-task` or `/session-gatekeeper`. Prepare raw ones 
 - [x] SEQ-004 P1: v1 Phase 4 — guard/heartbeat scripts, workflow templates, /ops-enroll → todo/2026-08-09-v1-implementation.md#4A-1
 - [x] SEQ-005 P1: v1 Phase 4B — live test by manual dispatch (user gate — run with the operator) → todo/2026-08-09-v1-implementation.md#4B-1
 - [x] SEQ-006 P2: v1 Phase 5 — /ops-announce, interactive drafts-first → todo/2026-08-09-v1-implementation.md#5A-1
-- [ ] SEQ-007 P2: v1 Phase 6 — gatekeeper inbox PR + trigger enablement (blocked by session-flow SEQ-001) → todo/2026-08-09-v1-implementation.md#6A-1
+- [ ] SEQ-007 P2: v1 Phase 6 — enable the event trigger and daily cron on the pilot unit (USER GATE, operator present; the 6A-1 gatekeeper inbox change landed in session-flow 1.4.0, so only enablement remains) → todo/2026-08-09-v1-implementation.md#6A-2
 - [x] SEQ-008 P1: v1 Phase 7 — README, CHANGELOG 0.1.0, version bump, tag → todo/2026-08-09-v1-implementation.md#7A-1
 - [x] SEQ-009 P1: /ops-enroll must require SEQUENCE.md be *tracked in git*, not merely present on disk — session-scribe passed enrolment while CI could not see the file → todo/tasks/0009-enroll-requires-tracked-sequence.md
 - [x] SEQ-010 P1: Remove the OPS_DRAFT_PR claim — spec §7 documents a draft-PR fallback that exists only as a comment, with no implementing logic anywhere → todo/tasks/0010-remove-unimplemented-draft-pr-claim.md

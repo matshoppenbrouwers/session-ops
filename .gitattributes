@@ -1,0 +1,13 @@
+# Normalize line endings across platforms: store LF in the repo and
+# check out LF everywhere. Prevents CRLF flips on Windows/WSL checkouts.
+* text=auto eol=lf
+
+# Keep shell scripts with Unix line endings on all platforms.
+# /ops-enroll copies scripts/*.sh straight into an enrolled repo's .github/,
+# where they run on ubuntu-latest. A CR is a syntax error to bash there, so a
+# CRLF checkout ships a guard that cannot run: the step exits non-zero, every
+# ops run goes red, and steps.guard.outputs.ok is never set.
+*.sh text eol=lf
+
+# The workflow templates travel the same path into .github/workflows/.
+*.yml text eol=lf

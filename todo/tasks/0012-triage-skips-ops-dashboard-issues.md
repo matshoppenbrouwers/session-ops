@@ -1,6 +1,6 @@
 # SEQ-012: `ops-triage` must skip issues labelled `ops-dashboard`
 
-**Status**: [ ]
+**Status**: [x]
 **Priority**: P2
 **Sequence**: todo/SEQUENCE.md
 **Origin**: SEQ-005 / 4B-1 live test, 2026-08-13

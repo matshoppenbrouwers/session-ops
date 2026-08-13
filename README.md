@@ -32,7 +32,7 @@ Five skills, three scripts, two workflow templates, zero agents.
 
 | Template | Trigger |
 |---|---|
-| `templates/ops-triage.yml` | `issues: [opened, reopened]` + `workflow_dispatch`. One issue per run, minus `scribe:mirror` issues. |
+| `templates/ops-triage.yml` | `issues: [opened, reopened]` + `workflow_dispatch`. One issue per run, minus `scribe:mirror` and `ops-dashboard` issues. |
 | `templates/ops-sweep.yml` | `workflow_dispatch` always; `schedule:` shipped commented out. |
 
 ---
@@ -74,7 +74,7 @@ Every control is deterministic and lives **outside** the agent — the practitio
 - `permissions:` limited to `contents: write, issues: write`.
 - `--allowedTools` reduced to file tools, `Bash(git:*)`, and the two GitHub issue-read tools. **No web tools.**
 - `timeout-minutes` (10 triage / 15 sweep), `--max-turns` caps, and per-issue / per-repo concurrency.
-- Issues labelled `scribe:mirror` skip the triage job entirely, via a job-level `if:`. [session-scribe](https://github.com/matshoppenbrouwers/session-scribe)'s backlog mirror opens one issue per `SEQUENCE.md` entry, so triaging them would re-triage items that came *from* SEQUENCE.md and can enqueue them straight back into it — a first mirror of a 21-entry backlog is 21 such runs. The skip happens before the guard, so it costs no quota slot; a `workflow_dispatch` run still triages a mirrored issue deliberately. The filter is the label, never the author or an `SEQ-` title prefix: the mirror runs under the same account a human files issues from by hand.
+- Issues labelled `scribe:mirror` or `ops-dashboard` skip the triage job entirely, via a job-level `if:`. [session-scribe](https://github.com/matshoppenbrouwers/session-scribe)'s backlog mirror opens one issue per `SEQUENCE.md` entry, so triaging them would re-triage items that came *from* SEQUENCE.md and can enqueue them straight back into it — a first mirror of a 21-entry backlog is 21 such runs. The pinned dashboard issue is the sweep's own render, so triaging it feeds the bot its output; enrolment pins it before the workflows exist, but reopening a closed dashboard issue is an ordinary thing to do and fires `issues: [reopened]`. The skip happens before the guard, so it costs no quota slot; a `workflow_dispatch` run still triages either kind deliberately. The filter is the label, never the author or an `SEQ-` title prefix: both bots run under the same account a human files issues from by hand.
 - `ops-guard.sh` runs before the agent step and skips it when the account's ops runs for the day have hit `budget.max_ci_runs_per_day` — a hit cap skips the agent, it does not fail the run.
 - `ops-heartbeat.sh` runs only on failure and flags the dashboard issue on the third consecutive failure.
 - `schedule:` ships commented out. The live schedule is a second, explicit yes.

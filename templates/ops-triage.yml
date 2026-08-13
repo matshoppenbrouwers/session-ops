@@ -1,4 +1,4 @@
-# ops-template-version: 7
+# ops-template-version: 8
 #
 # Installed by /ops-enroll into .github/workflows/ops-triage.yml.
 # Event-driven triage: one issue per run (spec §5, Appendix A).
@@ -8,7 +8,8 @@
 #   - permissions capped at contents: write, issues: write (+ actions: read,
 #     which the guard needs to count runs; a permissions: block sets every
 #     unlisted scope to none, so omitting it makes the guard fail closed)
-#   - the job is skipped outright for `scribe:mirror` issues (see the job `if:`)
+#   - the job is skipped outright for `scribe:mirror` and `ops-dashboard` issues
+#     (see the job `if:`)
 #   - the quota guard runs before the agent and can skip it (never fails the run)
 #   - timeout-minutes + --max-turns + concurrency-cancel per issue
 #   - --allowedTools is a minimal list: files, git, and issue reads. Nothing else.
@@ -46,9 +47,19 @@ jobs:
     # title prefix: the mirror runs under the same account a human files issues from,
     # and a human can type `SEQ-NNN` by hand.
     #
-    # `workflow_dispatch` has no `github.event.issue`, so the expression is false there
-    # and a manual run can still triage a mirrored issue deliberately.
-    if: ${{ !contains(github.event.issue.labels.*.name, 'scribe:mirror') }}
+    # The pinned dashboard issue is labelled `ops-dashboard` and is the sweep's own
+    # output, so triaging it feeds the bot its own render — reading "ops dashboard:
+    # <repo>" as if a human had filed it and plausibly escalating about the escalation
+    # list. `/ops-enroll` pins it before the workflows exist, so enrolment never fires,
+    # but `issues: [reopened]` does: closing and reopening a pinned issue is ordinary.
+    # Same reasoning as above — the label, not the author, since the sweep commits
+    # under the account a human files issues from.
+    #
+    # `workflow_dispatch` has no `github.event.issue`, so both `contains` calls are
+    # false there and a manual run can still triage either kind deliberately.
+    if: >-
+      ${{ !contains(github.event.issue.labels.*.name, 'scribe:mirror')
+      && !contains(github.event.issue.labels.*.name, 'ops-dashboard') }}
     steps:
       - uses: actions/checkout@v4
 

@@ -142,7 +142,7 @@ Enrolling a repo is taking on an oversight liability, not gaining free throughpu
 | `ops-sweep.yml` | Per-repo concurrency without cancel, `timeout-minutes: 15`, `--max-turns 40`, schedule off by default |
 | `ops-guard.sh` | Counts today's ops runs before the agent starts and skips it at the cap — outside the agent, always exits 0 so a cap hit is a skip, not a red run |
 | `ops-heartbeat.sh` | Three consecutive failures flag the dashboard issue, so a dead clock notifies instead of going quiet |
-| `permissions:` | `contents: write, issues: write` and nothing more |
+| `permissions:` | `contents: write, issues: write`, plus read-only `actions: read` so the guard can count runs — no other write scope |
 | `--allowedTools` | Files, `Bash(git:*)`, and the issue tools only — no web tools |
 
 A CI gatekeeper holds repo write access plus untrusted issue text plus a write-capable token. Gatekeeper's "issue text is untrusted" rule is necessary but not sufficient; **the minimal tool list is the real control.** If a run is ever observed writing outside SEQUENCE.md / the inbox / `escalations.md`, or acting on injected instructions, the upgrade path is spec Appendix C (read-only agent emitting a verdicts file, applied by a separate deterministic job) — built on evidence, not pre-emptively.

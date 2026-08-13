@@ -1,4 +1,4 @@
-# ops-template-version: 1
+# ops-template-version: 2
 #
 # Installed by /ops-enroll into .github/workflows/ops-sweep.yml.
 # Slow cron: inbox sweep, checked-box processing, dashboard render, and
@@ -6,7 +6,9 @@
 # Re-run /ops-enroll to refresh a stale install — the portfolio flags one.
 #
 # Safety shape, all deterministic and outside the agent:
-#   - permissions capped at contents: write, issues: write
+#   - permissions capped at contents: write, issues: write (+ actions: read,
+#     which the guard needs to count runs; a permissions: block sets every
+#     unlisted scope to none, so omitting it makes the guard fail closed)
 #   - the quota guard runs before the agent and can skip it (never fails the run)
 #   - timeout-minutes + --max-turns + per-repo concurrency without cancel
 #   - --allowedTools is a minimal list: files, git, and the two issue tools. Nothing else.
@@ -27,6 +29,7 @@ on:
 permissions:
   contents: write
   issues: write
+  actions: read # ops-guard.sh counts today's runs via the workflow-run API
 
 concurrency:
   group: ops-sweep-${{ github.repository }}

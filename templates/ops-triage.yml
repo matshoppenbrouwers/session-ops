@@ -1,11 +1,13 @@
-# ops-template-version: 2
+# ops-template-version: 3
 #
 # Installed by /ops-enroll into .github/workflows/ops-triage.yml.
 # Event-driven triage: one issue per run (spec §5, Appendix A).
 # Re-run /ops-enroll to refresh a stale install — the portfolio flags one.
 #
 # Safety shape, all deterministic and outside the agent:
-#   - permissions capped at contents: write, issues: write
+#   - permissions capped at contents: write, issues: write (+ actions: read,
+#     which the guard needs to count runs; a permissions: block sets every
+#     unlisted scope to none, so omitting it makes the guard fail closed)
 #   - the job is skipped outright for `scribe:mirror` issues (see the job `if:`)
 #   - the quota guard runs before the agent and can skip it (never fails the run)
 #   - timeout-minutes + --max-turns + concurrency-cancel per issue
@@ -31,6 +33,7 @@ on:
 permissions:
   contents: write
   issues: write
+  actions: read # ops-guard.sh counts today's runs via the workflow-run API
 
 concurrency:
   group: ops-triage-${{ github.event.issue.number || inputs.issue || github.run_id }}

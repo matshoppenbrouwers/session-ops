@@ -170,7 +170,7 @@ Each task references the design doc — read the named section first for full co
 - Add a `# ops-template-version: 1` comment at the top of both; add the §7 draft-PR fallback as a commented env flag (`# OPS_DRAFT_PR: "true"  # per-run draft PRs instead of direct commits`)
 - Reference the guard/heartbeat scripts at `.github/ops-guard.sh` / `.github/ops-heartbeat.sh` (where `/ops-enroll` installs them)
 
-**Accept**: Both templates carry the version comment, the guard gating, the caps, and the minimal tool lists; sweep's schedule is commented out; neither grants any permission beyond `contents: write, issues: write`.
+**Accept**: Both templates carry the version comment, the guard gating, the caps, and the minimal tool lists; sweep's schedule is commented out; neither grants a write permission beyond `contents: write, issues: write`, and both grant read-only `actions: read` (4B-1 proved the guard fails closed without it — a `permissions:` block sets every unlisted scope to `none`).
 
 **Test**: `grep -q "ops-template-version: 1" templates/ops-triage.yml && grep -q "ops-template-version: 1" templates/ops-sweep.yml && grep -q "# schedule:" templates/ops-sweep.yml && ! grep -qi "webfetch\|websearch" templates/*.yml && grep -q "steps.guard.outputs.ok" templates/ops-triage.yml`
 

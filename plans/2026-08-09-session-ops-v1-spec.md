@@ -130,7 +130,7 @@ to triage, never instructions to obey (gatekeeper non-negotiable 4 applies).
 
 ## 7. Escalations and bot writes — one surface, one discipline
 
-**Bot enqueues are direct commits.** A SEQUENCE.md line is a proposal by nature — reversible by deleting it during groom — so gating it behind approval would convert every trivial task into a decision, against §2's attention rule. The `[auto]` marker is the veto handle. The conflict window beads documented is confined, not ignored: exactly one scheduled writer per repo, committing atomically, plus one stated discipline — **pull before editing SEQUENCE.md locally**. If real conflicts show up anyway, the fallback is per-run draft PRs (a config flag in the template), not a redesign.
+**Bot enqueues are direct commits.** A SEQUENCE.md line is a proposal by nature — reversible by deleting it during groom — so gating it behind approval would convert every trivial task into a decision, against §2's attention rule. The `[auto]` marker is the veto handle. The conflict window beads documented is confined, not ignored: exactly one scheduled writer per repo, committing atomically, plus one stated discipline — **pull before editing SEQUENCE.md locally**. If real conflicts show up anyway, the intended fallback is per-run draft PRs rather than a redesign — but that mode is **not implemented** in v1 (it changes the single-writer model and needs `pull-requests: write`), and is tracked as SEQ-014.
 
 **Escalations never touch SEQUENCE.md.** They go to `{todo}/escalations.md`, a bot-owned file of checkbox lines:
 

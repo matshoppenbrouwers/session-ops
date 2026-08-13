@@ -1,6 +1,6 @@
 # SEQ-010: Remove the `OPS_DRAFT_PR` claim — it has no implementation
 
-**Status**: [ ]
+**Status**: [x]
 **Priority**: P1
 **Sequence**: todo/SEQUENCE.md
 **Origin**: SEQ-005 / 4B-1 live test, 2026-08-13

@@ -1,4 +1,4 @@
-# ops-template-version: 5
+# ops-template-version: 6
 #
 # Installed by /ops-enroll into .github/workflows/ops-sweep.yml.
 # Slow cron: inbox sweep, checked-box processing, dashboard render, and
@@ -13,11 +13,6 @@
 #   - timeout-minutes + --max-turns + per-repo concurrency without cancel
 #   - --allowedTools is a minimal list: files, git, and the two issue tools. Nothing else.
 #   - three consecutive failures flag the dashboard issue, so a dead clock notifies
-#
-# Optional fallback (spec §7): if direct commits to SEQUENCE.md ever collide in
-# practice, flip this on instead of redesigning — the agent then opens one draft
-# PR per run rather than committing to the default branch.
-#   # OPS_DRAFT_PR: "true"  # per-run draft PRs instead of direct commits
 
 name: ops-sweep
 

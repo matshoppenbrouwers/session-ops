@@ -1,4 +1,4 @@
-# ops-template-version: 6
+# ops-template-version: 7
 #
 # Installed by /ops-enroll into .github/workflows/ops-triage.yml.
 # Event-driven triage: one issue per run (spec §5, Appendix A).
@@ -12,11 +12,6 @@
 #   - the quota guard runs before the agent and can skip it (never fails the run)
 #   - timeout-minutes + --max-turns + concurrency-cancel per issue
 #   - --allowedTools is a minimal list: files, git, and issue reads. Nothing else.
-#
-# Optional fallback (spec §7): if direct commits to SEQUENCE.md ever collide in
-# practice, flip this on instead of redesigning — the agent then opens one draft
-# PR per run rather than committing to the default branch.
-#   # OPS_DRAFT_PR: "true"  # per-run draft PRs instead of direct commits
 
 name: ops-triage
 

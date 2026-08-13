@@ -16,7 +16,7 @@ Add entries with `/session-add-task` or `/session-gatekeeper`. Prepare raw ones 
 - [ ] SEQ-007 P2: v1 Phase 6 — gatekeeper inbox PR + trigger enablement (blocked by session-flow SEQ-001) → todo/2026-08-09-v1-implementation.md#6A-1
 - [x] SEQ-008 P1: v1 Phase 7 — README, CHANGELOG 0.1.0, version bump, tag → todo/2026-08-09-v1-implementation.md#7A-1
 - [x] SEQ-009 P1: /ops-enroll must require SEQUENCE.md be *tracked in git*, not merely present on disk — session-scribe passed enrolment while CI could not see the file → todo/tasks/0009-enroll-requires-tracked-sequence.md
-- [ ] SEQ-010 P1: Remove the OPS_DRAFT_PR claim — spec §7 documents a draft-PR fallback that exists only as a comment, with no implementing logic anywhere → todo/tasks/0010-remove-unimplemented-draft-pr-claim.md
+- [x] SEQ-010 P1: Remove the OPS_DRAFT_PR claim — spec §7 documents a draft-PR fallback that exists only as a comment, with no implementing logic anywhere → todo/tasks/0010-remove-unimplemented-draft-pr-claim.md
 - [ ] SEQ-011 P1: /ops-enroll must substitute {todo} when installing — both agent prompts ship the literal placeholder; 4B-1 substituted it by hand, so the shipped enrol path is untested (release blocker) → todo/tasks/0011-enroll-substitutes-todo-placeholder.md
 - [ ] SEQ-012 P2: ops-triage should skip issues labelled ops-dashboard — only scribe:mirror is skipped, so reopening the pinned dashboard issue triages the bot's own render → todo/tasks/0012-triage-skips-ops-dashboard-issues.md
 - [ ] SEQ-013 P3: ops-portfolio.py renders "n/ad ago" (all-or-nothing render guard) and silently drops entries whose status token is not [ ] or [x] → todo/tasks/0013-portfolio-freshness-and-status-tokens.md

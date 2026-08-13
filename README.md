@@ -81,7 +81,9 @@ Every control is deterministic and lives **outside** the agent — the practitio
 - Every bot commit message ends with `[skip ci]`, so **a bot push cannot fire a unit's deploy** (see below).
 - Both templates carry `# ops-template-version:` so the portfolio can flag stale installs; re-running `/ops-enroll` is the entire upgrade path.
 
-**Bot commits never deploy.** Both agent prompts require every commit message to end with `[skip ci]`. GitHub skips the workflow runs a commit would otherwise trigger, so a unit that deploys on push to `main` does not deploy because the bot enqueued a backlog line. This keeps the single-writer model of the section below intact — no branch, no PR, no extra permission scope — while removing the one consequence a direct commit could have beyond the file it wrote.
+**Automated commits never deploy.** Both agent prompts — and `/ops-capture`, which pushes an inbox file to the unit's default branch the moment you capture it — require every commit message to end with `[skip ci]`. GitHub skips the workflow runs a commit would otherwise trigger, so a unit that deploys on push to `main` does not deploy because the bot enqueued a backlog line or you jotted down an idea. This keeps the single-writer model of the section below intact — no branch, no PR, no extra permission scope — while removing the one consequence a direct commit could have beyond the file it wrote.
+
+The deliberate exception is `/ops-enroll`'s own install commit, which is attended, one-time, and lands `.github/workflows/` — the commit where you generally *want* CI to run.
 
 Two limits are worth knowing, because neither is hypothetical:
 

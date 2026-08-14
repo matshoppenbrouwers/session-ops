@@ -1,4 +1,4 @@
-# ops-template-version: 9
+# ops-template-version: 10
 #
 # Installed by /ops-enroll into .github/workflows/ops-triage.yml.
 # Event-driven triage: one issue per run (spec §5, Appendix A).
@@ -8,8 +8,8 @@
 #   - permissions capped at contents: write, issues: write (+ actions: read,
 #     which the guard needs to count runs; a permissions: block sets every
 #     unlisted scope to none, so omitting it makes the guard fail closed)
-#   - the job is skipped outright for `scribe:mirror` and `ops-dashboard` issues
-#     (see the job `if:`)
+#   - the job is skipped outright for `scribe:mirror`, `ops-dashboard` and
+#     `scribe:log` issues (see the job `if:`)
 #   - the quota guard runs before the agent and can skip it (never fails the run)
 #   - timeout-minutes + --max-turns + concurrency-cancel per issue
 #   - --allowedTools is a minimal list: files, git, and issue reads. Nothing else.
@@ -60,11 +60,20 @@ jobs:
     # Same reasoning as above — the label, not the author, since the sweep commits
     # under the account a human files issues from.
     #
-    # `workflow_dispatch` has no `github.event.issue`, so both `contains` calls are
-    # false there and a manual run can still triage either kind deliberately.
+    # session-scribe's SessionEnd hook posts every ended session as a comment on one
+    # `scribe:log` issue in the unit's log repo. When that log repo is itself an
+    # enrolled unit, opening it fires this workflow and so does every reopen — an
+    # issue that collects comments forever is one people close and reopen. Triaging it
+    # reads a work log ("what was asked, what was done, what is still open") as a
+    # human's intake request, and the "still open" list is exactly the shape the
+    # gatekeeper enqueues from.
+    #
+    # `workflow_dispatch` has no `github.event.issue`, so every `contains` call is
+    # false there and a manual run can still triage any of these deliberately.
     if: >-
       ${{ !contains(github.event.issue.labels.*.name, 'scribe:mirror')
-      && !contains(github.event.issue.labels.*.name, 'ops-dashboard') }}
+      && !contains(github.event.issue.labels.*.name, 'ops-dashboard')
+      && !contains(github.event.issue.labels.*.name, 'scribe:log') }}
     steps:
       - uses: actions/checkout@v4
 

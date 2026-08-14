@@ -5,6 +5,17 @@ All notable changes to session-ops are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this
 project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+
+- `ops-triage` skips issues labelled `scribe:log` (`ops-triage.yml` template version 10).
+  session-scribe's `SessionEnd` hook comments on one agent-log issue per repo; if that log repo is
+  itself an enrolled unit, opening or reopening the issue fired a triage run that read a work log —
+  "what was asked, what was done, what is still open" — as a human's intake request. Companion to
+  session-scribe's SEQ-035, which labels the issue at creation. Re-run `/ops-enroll` on enrolled
+  units to pick up the new template; the portfolio flags a stale install.
+
 ## [0.2.0] — 2026-08-14
 
 The release where the clock actually ran. 0.1.0 shipped a CI path inferred from prior art

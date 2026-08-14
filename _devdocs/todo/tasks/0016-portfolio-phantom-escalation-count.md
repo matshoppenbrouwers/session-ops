@@ -1,6 +1,6 @@
 # SEQ-016: Portfolio counts the escalations format header as an open escalation
 
-**Status**: [ ]
+**Status**: [x]
 **Priority**: P2
 **Sequence**: todo/SEQUENCE.md
 **Origin**: SEQ-007 / 6A-2 enablement baseline, 2026-08-14
@@ -127,3 +127,28 @@ esc = [c.strip() for c in row.split('|')][7]
 assert esc == '0', f'expected 0 escalations, got {esc!r}'
 print('PASS: pilot renders 0 escalations on a header-only file')"
 ```
+
+## Done (2026-08-14)
+
+- `ESCALATION_RE = re.compile(r"^- \[ \] ESC-\d+\b")` added to the module-level regex
+  block beside `ENTRY_RE`/`LINK_RE`; `escalations_awaiting()` matches on it instead of
+  `startswith("- [ ]")`. The `None` return for a missing file is untouched, so `—`
+  (no file) stays distinct from `0` (header-only file). Docstring records why the
+  numbered form is the discriminator, so the next reader does not re-loosen it.
+- `scripts/test-escalation-count.sh` (new, shaped after `test-skip-ci.sh`): six
+  sections over `mktemp -d` fixtures — header-only → `0`, header + one real entry →
+  `1`, one open + one ticked → `1`, three open → `3`, no file → `None` and a rendered
+  `—`, plus an anchoring case (a prose mention of the format is not an entry, which
+  is what stops a naive `"- [ ]" in line` regression). Each case asserts both
+  `escalations_awaiting()` and the rendered `build_row(...)[6]` cell, since the bug
+  was only visible in the render.
+- Test written first and run against the unfixed script: every count came back
+  exactly one high (`0→1`, `1→2`, `3→4`), reproducing the reported defect before the
+  fix; all green after. `test-skip-ci.sh` still ALL PASS.
+- Live regression on the pilot: `per-cropfolio`'s row went `| … | 1 | … |` → `| … |
+  0 | … |` with `escalations.md` unchanged on disk (verified header-only). Portfolio
+  and the sweep's dashboard render (`_No open escalations._`) now agree.
+- `/ops-enroll`'s header text untouched and no unit re-enrolled, per the rejected
+  alternative. Rule documented in README "The portfolio" and the field tightened in
+  spec §8's table (line 154 said "unchecked boxes", the looseness the bug came from).
+- Still stdlib-only.

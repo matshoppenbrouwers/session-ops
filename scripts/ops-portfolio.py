@@ -42,6 +42,7 @@ OPS_WORKFLOWS = ("ops-triage.yml", "ops-sweep.yml")
 TEMPLATE_VERSION_RE = re.compile(r"#\s*ops-template-version:\s*(\d+)")
 ENTRY_RE = re.compile(r"^- \[([^\]]*)\] (.*)$")
 LINK_RE = re.compile(r"→\s*(\S+)")
+ESCALATION_RE = re.compile(r"^- \[ \] ESC-\d+\b")
 VERSION_RE = re.compile(r"\b(\d+\.\d+(?:\.\d+)?)\b")
 
 
@@ -171,11 +172,21 @@ def inbox_depth(unit_path):
 
 
 def escalations_awaiting(unit_path):
+    """Count unticked escalations, or None when the file is absent.
+
+    Only the pinned format's *numbered* form counts: `/ops-enroll` writes a
+    format example (`- [ ] ESC-NNN (date, origin): summary`) into the header of
+    every unit's escalations.md, and matching bare `- [ ]` scored that example
+    as a real escalation — an empty file read as 1 awaiting, forever. `\\d+`
+    cannot match the literal `NNN`, which is the discriminator.
+
+    A ticked box is consumed by the next sweep, so "awaiting" means unticked.
+    """
     esc = os.path.join(todo_dir(unit_path), "escalations.md")
     if not os.path.isfile(esc):
         return None
     with open(esc, encoding="utf-8") as f:
-        return sum(1 for line in f if line.startswith("- [ ]"))
+        return sum(1 for line in f if ESCALATION_RE.match(line))
 
 
 def last_release(unit_path):

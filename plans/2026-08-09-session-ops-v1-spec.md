@@ -151,7 +151,7 @@ The aggregation is a **deterministic script**, not model work: same input, same 
 | Per-unit field | Source |
 |---|---|
 | Backlog counts (done/total · ready · needs-breakdown) | SEQUENCE.md, session-status Step 2b counting rules |
-| Inbox depth · escalations awaiting | `{todo}/inbox/*.md` count · unchecked boxes in `escalations.md` (+ dashboard issue link) |
+| Inbox depth · escalations awaiting | `{todo}/inbox/*.md` count · unchecked **numbered** entries (`- [ ] ESC-\d+`) in `escalations.md` — the header's `ESC-NNN` format example is not one (+ dashboard issue link) |
 | Last release | Top CHANGELOG.md version, falling back to latest git tag |
 | Last activity | Last commit date on the default branch |
 | Clock state · freshness | Workflow files present/scheduled/stale-template; **days since last successful run and current failure streak** — and the failure path is active, not just passive: three consecutive failed sweeps make the workflow's own failure handler flag the dashboard issue (§5's heartbeat), so a dead clock arrives as a notification rather than waiting to be noticed |

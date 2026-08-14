@@ -304,7 +304,7 @@ Open findings not fixed here are logged as SEQ-009 through SEQ-013.
 
 **Instructions**:
 - **Requires 4B-1 and 6A-1 complete and the operator present**
-- Prerequisite status (2026-08-13): 6A-1 is done. 4B-1 is still marked `[ ]` here even though its sequence entry SEQ-005 is closed, and it carries no recorded verdict note — so of its five checks, only the triage round-trip is evidenced (in the 2026-08-13 cropfolio-rep run). Confirm the dashboard round-trip, the double-processing check, and the guard skip before enabling a schedule, or reopen 4B-1.
+- ~~Prerequisite status (2026-08-13): 6A-1 is done. 4B-1 is still marked `[ ]` here even though its sequence entry SEQ-005 is closed, and it carries no recorded verdict note — so of its five checks, only the triage round-trip is evidenced (in the 2026-08-13 cropfolio-rep run). Confirm the dashboard round-trip, the double-processing check, and the guard skip before enabling a schedule, or reopen 4B-1.~~ **Stale, corrected 2026-08-14:** 4B-1 does carry a recorded verdict — PASS across all nine checks, dashboard round-trip, double-processing and guard skip included. Both prerequisites were clear.
 - Re-run `/ops-enroll` on the pilot unit; confirm the live trial question to uncomment `schedule:` with the registry cadence (default `0 6 * * 1-5`) and leave the event trigger active
 - Watch one week in the portfolio's freshness column (`/ops-status` daily); watch the attention budget — if the dashboard fills faster than ~15 minutes a day clears it, lower cadence or unenroll (spec §12's meta-risk)
 - Enroll remaining units one at a time only after the week looks healthy
@@ -312,6 +312,38 @@ Open findings not fixed here are logged as SEQ-009 through SEQ-013.
 **Accept**: One unit runs on schedule for a week with no failure streak and no silent staleness; the decision to widen enrollment is made deliberately afterwards.
 
 **Test**: user-run — `python3 scripts/ops-portfolio.py` after a week shows the pilot unit scheduled, fresh, and streak-free.
+
+**Enabled (2026-08-14), operator present. The watch week runs to 2026-08-21 — this task stays open until then.**
+
+Pilot unit: `frameworkreboot/cropfolio-rep` (the 4B-1 unit). The event trigger was
+already live from 4B-1 (`issues: [opened, reopened]`), so only the sweep's cron was
+outstanding. Enablement went in three steps rather than one, because the pilot had
+drifted behind the templates:
+
+| Step | What | Evidence |
+|---|---|---|
+| Upgrade | triage v6 → v9, sweep v5 → v7 | `78e1299` |
+| Dispatch-verify | manual `ops-sweep` on the upgraded templates | run 31773584227, green in 2m29s, `ops-guard: ok=true count=1 cap=12 reason=under-cap`, agent step ran, heartbeat dormant, empty inbox → no commit |
+| Enable | uncomment `schedule:` at the registry cadence `0 6 * * 1-5` | `52bf1b1`; GitHub reports `ops-sweep` `state: active` |
+
+**The upgrade was not optional housekeeping.** The pilot was running the pre-SEQ-012
+triage, which has no `ops-dashboard` skip, while `issues: [reopened]` was already live —
+so reopening pinned issue #30 would have fed the bot its own render. That was live
+exposure before any cron existed, and a daily sweep that rewrites the dashboard only
+raises the odds of a reopen. SEQ-015's `[skip ci]` and SEQ-010's dead `OPS_DRAFT_PR`
+comment came in on the same upgrade. Blast radius of the missing `[skip ci]` on this
+unit was nil — cropfolio-rep has no deploy-on-push workflow, only the two ops ones —
+but note it deploys to Vercel via git integration, which is a platform-side hook that
+`[skip ci]` does not govern in any case.
+
+Baseline portfolio row at enablement (`0d ago · streak 0`, budget 1/12, clock
+`triage+sweep (scheduled)`). First scheduled run due 2026-08-14 06:00 UTC.
+
+**Found while taking the baseline, not fixed here:** `ops-portfolio.py`
+`escalations_awaiting()` counts every line starting `- [ ]`, including the format-header
+example line that `/ops-enroll` itself writes into `escalations.md`. So an empty
+escalations file reads as one escalation awaiting, on every enrolled unit, permanently —
+and `/ops-status`'s verdict inherits the off-by-one. Logged as SEQ-016.
 
 ---
 

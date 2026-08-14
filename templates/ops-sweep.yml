@@ -1,4 +1,4 @@
-# ops-template-version: 8
+# ops-template-version: 9
 #
 # Installed by /ops-enroll into .github/workflows/ops-sweep.yml.
 # Slow cron: inbox sweep, checked-box processing, dashboard render, and
@@ -82,6 +82,8 @@ jobs:
             3) Rewrite the dashboard issue body from escalations.md, keeping the
             pinned line format:
             "- [ ] ESC-NNN (date, origin): summary. _Grounding: …_".
+            Preserve any "Agent log:" link line in the current body verbatim —
+            it was baked at enroll; never remove, edit, or invent one.
             4) If a release is newer than any release-announce inbox item AND the
             style pack is checked out at .ops/workspace/style/: draft the
             announcement per /ops-announce's contract into the inbox. No style

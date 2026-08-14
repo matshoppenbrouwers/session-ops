@@ -115,7 +115,7 @@ Escalations never touch SEQUENCE.md. They go to `{todo}/escalations.md`, a bot-o
 - [ ] ESC-004 (2026-08-09, issue #31): Auth rework — architectural, needs research-design. _Grounding: PRD §2; touches sync/._
 ```
 
-The file is the source of truth; the pinned dashboard issue is its render, rewritten by every sweep. **A checked box has exactly one meaning: "yes, this deserves work."** The next sweep enqueues a `(needs breakdown)` SEQUENCE entry referencing the escalation, removes the line in the same commit, and re-renders. No inline instructions are parsed under ticked boxes. The bot never checks its own boxes — box state is the one place a human writes into the loop.
+The file is the source of truth; the pinned dashboard issue is its render, rewritten by every sweep. When `scribe.json` maps the unit at enroll time (`github.log_repo` + `github.log_issue`), the dashboard body also carries one line linking the unit's session-scribe agent-log issue — "what happened lately" one tap from "what needs attention". CI cannot read `scribe.json`, so the link is baked at enroll like every other install-time value, and every sweep rewrite preserves it. **A checked box has exactly one meaning: "yes, this deserves work."** The next sweep enqueues a `(needs breakdown)` SEQUENCE entry referencing the escalation, removes the line in the same commit, and re-renders. No inline instructions are parsed under ticked boxes. The bot never checks its own boxes — box state is the one place a human writes into the loop.
 
 ## The portfolio
 

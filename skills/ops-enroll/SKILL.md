@@ -88,6 +88,7 @@ Enrolling {unit} ({owner/name}) — dispatch-only:
   .github/ops-heartbeat.sh           ← scripts/ops-heartbeat.sh (chmod +x)
   {todo}/escalations.md              ← created empty, with the format header
   GitHub issue "ops dashboard: {name}" ← created, labelled ops-dashboard, pinned
+                                         (body links the agent-log issue when scribe.json maps one)
 
   Workflow env baked from the registry:
     OPS_MAX_RUNS_PER_DAY: 12
@@ -127,6 +128,8 @@ In order, then one commit and push:
    ```
 
 6. **Create and pin the dashboard issue** — title `ops dashboard: {name}`, label `ops-dashboard`, body rendered from `escalations.md` (empty on day one, saying so), then pin it. This is the phone-visible render; the file stays the source of truth.
+
+   When `scribe.json` (same config directory as the registry) maps the unit's path with both `github.log_repo` and `github.log_issue`, append one line to the body linking the unit's agent-log issue — `Agent log: https://github.com/{log_repo}/issues/{log_issue}` — so "what happened lately" sits one tap from "what needs attention". No scribe.json, or either key absent → skip silently, no line. CI cannot read `scribe.json`, so the link is baked here like every other install-time value; the sweep's rewrite preserves the line verbatim.
 7. **Verify the substitution before committing** — `! grep -rq "{todo}" .github/`. A leftover placeholder is a **failed install**, not a warning: stop, say which file still carries it, and commit nothing.
 8. **Commit and push** everything in one commit (`Enroll {name} in session-ops (dispatch-only)`), retrying a couple of times on transient network failure.
 

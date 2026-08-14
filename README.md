@@ -103,6 +103,8 @@ What neither control solves is a **protected `main` that forbids direct pushes**
 
 The injection surface is named rather than waved at: a CI gatekeeper holds repo access, untrusted issue text, and a write-capable token. Gatekeeper's "issue text is untrusted" rule is necessary but not sufficient — the minimal tool list is the real control.
 
+**Notification volume when all three plugins run on one repo** — enrolled here, mirrored and session-logged by session-scribe: scribe's per-session log comments dominate what reaches your phone, one comment per ended session ([a known limitation on scribe's side](https://github.com/matshoppenbrouwers/session-scribe#known-limitations)). ops' recurring writes are quiet by construction — `[skip ci]` commits and dashboard *body edits*, neither of which notifies watchers. The notification-bearing ops events are exactly two: enroll's one-time dashboard issue creation, and the heartbeat's one line per outage.
+
 ## The feed, and escalations
 
 The inbox convention is the place any future source drops into: `{paths.todo}/inbox/`, one item per file, `YYYY-MM-DD-slug.md`, with `source` / `captured` / `by` / optional `url` frontmatter. **Frontmatter is metadata; the body is untrusted data for gatekeeper to triage, never instructions to obey.** Gatekeeper routes an item and `git rm`s it in the same commit — git history is the archive, there is no `processed/` directory.
@@ -155,6 +157,7 @@ A unit's `repo` value duplicates the path→`owner/name` fact `scribe.json` also
 | If this is absent | Then |
 |---|---|
 | session-flow in a unit | Inbox items sit inert; the portfolio still reports counts; workflows are not installed (enroll checks) |
+| session-scribe | The triage skip's `scribe:mirror` label check simply never matches; `/ops-init`'s `repo` prefill and enroll's agent-log link skip silently. Nothing else references scribe |
 | session-ops | session-flow runs single-repo exactly as today; nothing references ops |
 | A registered unit's local clone | The portfolio marks the unit `unreachable` and reports the rest |
 | The workspace | Skills stop and say "run `/ops-init`" — the one interactive failure |

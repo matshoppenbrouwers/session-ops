@@ -25,6 +25,6 @@ Add entries with `/session-add-task` or `/session-gatekeeper`. Prepare raw ones 
 - [x] SEQ-014 P4: Draft-PR mode for the one case `[skip ci]` cannot reach — a protected `main` that forbids direct pushes. BLOCKED ON EVIDENCE: do not implement until an enrolled unit actually has one (Appendix C's posture). Design is done, not the build → research/2026-08-13-ops-draft-pr-mode.md
 - [x] SEQ-017 P2: Honor CLAUDE_CONFIG_DIR when resolving the registry → todo/tasks/0017-honor-claude-config-dir.md
 - [x] SEQ-018 P3: Decide the registry cross-read with scribe.json → todo/tasks/0018-registry-cross-read-decision.md
-- [ ] SEQ-019 P3: Add the session-scribe degradation row and the combined-notification note → todo/tasks/0019-degradation-table-scribe-row.md
+- [x] SEQ-019 P3: Add the session-scribe degradation row and the combined-notification note → todo/tasks/0019-degradation-table-scribe-row.md
 - [ ] SEQ-020 P3: Sweep checked-box enqueue carries the auto-provenance marker → todo/tasks/0020-sweep-enqueue-carries-auto.md
 - [ ] SEQ-021 P3: Decide whether the dashboard links the unit's agent-log issue → todo/tasks/0021-dashboard-links-log-issue.md

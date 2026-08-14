@@ -150,6 +150,8 @@ Coupling is by file convention in known locations. Absence never errors.
 
 The registry resolves as `ops.json` in the Claude config directory — `$CLAUDE_CONFIG_DIR` if set, else `~/.claude` — the same rule session-scribe uses for `scribe.json`, so the two registries always live in the same directory.
 
+A unit's `repo` value duplicates the path→`owner/name` fact `scribe.json` also holds for repos it mirrors. **scribe.json is the senior source for that fact**: `/ops-init` prefills `repo` from `projects.<path>.github.repo` when the path is registered there, and a moved or renamed checkout is corrected in scribe.json first, then re-registered here. The duplication itself is deliberate — CI reads neither file and each plugin must keep working with the other absent — so the cross-read is a prefill at registration time, never a runtime dependency.
+
 | If this is absent | Then |
 |---|---|
 | session-flow in a unit | Inbox items sit inert; the portfolio still reports counts; workflows are not installed (enroll checks) |

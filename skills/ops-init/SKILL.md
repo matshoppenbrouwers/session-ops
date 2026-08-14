@@ -75,7 +75,7 @@ Report what was created, then point forward: `/ops-enroll` to put a registered u
 ```
 
 - **Keys are absolute local paths**, resolved by **longest-prefix matching** (scribe's rule): a cwd anywhere inside a unit resolves to the deepest registered path that prefixes it.
-- **`repo`** is the GitHub `owner/name`.
+- **`repo`** is the GitHub `owner/name`. Before asking for it, check `scribe.json` (same config directory) for a `projects` entry keyed by the same absolute path: when `projects.<path>.github.repo` exists, **prefill from it and confirm** rather than ask cold — scribe.json is the senior source for the path→`owner/name` fact, so a value that diverges from it is almost certainly a mistake. No scribe.json, or the path not registered there → ask as usual; nothing else changes.
 - **`kind`** is a descriptive label (`code`, `content`, …) used only for portfolio grouping and announce's content-unit lookup.
 - **`cadence`** is the cron line `/ops-enroll` writes into the unit's sweep workflow once that unit's live trial is confirmed — default `0 6 * * 1-5` (daily on weekdays; the scarce resource is the operator's attention, so cadence defaults slow).
 

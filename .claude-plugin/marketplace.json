@@ -5,14 +5,14 @@
   },
   "metadata": {
     "description": "Multi-repo operations layer for Claude Code, companion to session-flow",
-    "version": "0.1.0"
+    "version": "0.2.0"
   },
   "plugins": [
     {
       "name": "session-ops",
       "source": "./",
       "description": "The ops loop for a one-person software factory: registry/workspace init, hardened GitHub Actions clock enrollment, per-unit inbox capture, a deterministic multi-repo portfolio, and draft-only release announcements. Triages and drafts; never implements or publishes.",
-      "version": "0.1.0"
+      "version": "0.2.0"
     }
   ]
 }

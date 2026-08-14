@@ -5,6 +5,74 @@ All notable changes to session-ops are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this
 project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0] — 2026-08-14
+
+The release where the clock actually ran. 0.1.0 shipped a CI path inferred from prior art
+and said so; everything below is what it took to make that path execute end-to-end, plus the
+defects the first real runs exposed. One unit has been on a live schedule since 2026-08-14.
+Templates still install manual-dispatch-only for everyone — that default has not moved.
+
+### Fixed
+
+**The CI path — none of this was reachable by inspection**
+
+- `actions: read` granted in both workflows. Without it `ops-guard.sh` could not list runs and
+  failed closed on *every* run, so the agent step never executed.
+- `id-token: write` granted — `claude-code-action` needs OIDC.
+- The agent prompts named GitHub MCP tools that do not exist; replaced with the real names.
+- The prompts committed but never pushed, silently discarding the work of a whole run.
+- Line endings pinned to LF, so a CRLF checkout cannot break the shell scripts.
+
+**Defects the live runs and the enablement baseline exposed**
+
+- `/ops-enroll` now requires the sequence layer to be **tracked in git**, not merely present on
+  disk — a unit could pass enrolment while CI could not see the file (SEQ-009).
+- `/ops-enroll` substitutes `{todo}` when installing. Both agent prompts shipped the literal
+  placeholder, so the shipped enrol path had never been exercised as written (SEQ-011).
+- `ops-triage` skips issues labelled `ops-dashboard`. Only `scribe:mirror` was skipped, so
+  reopening the pinned dashboard issue fed the bot its own render (SEQ-012).
+- The portfolio's freshness cell renders each half independently — a unit with no successful
+  run reads `n/a · streak 3`, not the fabricated `n/ad ago` — and no longer drops SEQUENCE
+  entries whose status token is neither `[ ]` nor `[x]`; they count in `total` and report as
+  `· N other` (SEQ-013).
+- Escalations are counted by their **numbered** form (`- [ ] ESC-014`). The format example
+  `/ops-enroll` writes into every unit's `escalations.md` header was being scored as a real
+  escalation, so an empty file read as one awaiting, on every unit, permanently — and
+  `/ops-status`'s verdict inherited the off-by-one (SEQ-016).
+
+### Changed
+
+- **Bot commits end with `[skip ci]`**, so an ops push cannot fire a unit's deploy workflow.
+  This resolves the driver behind draft-PR mode deterministically, with no branch, no PR, and
+  no `pull-requests: write` scope. `/ops-capture` carries the same rule, since it also pushes
+  to a unit's default branch. The `/ops-enroll` install commit is the documented exception:
+  it is attended. Platform-side git integrations (Vercel and similar) are not governed by
+  `[skip ci]` in any case (SEQ-015).
+- `ops-triage.yml` at template version 9, `ops-sweep.yml` at 7. Re-run `/ops-enroll` on an
+  enrolled unit to upgrade; the portfolio flags a stale install until you do.
+- The unimplemented `OPS_DRAFT_PR` fallback is gone from spec §7 — it existed only as a
+  comment, with no implementing logic anywhere (SEQ-010).
+- Triage skips session-scribe's mirrored issues, so the two plugins do not triage each other's
+  bookkeeping.
+
+### Added
+
+- `scripts/test-skip-ci.sh` and `scripts/test-escalation-count.sh` — acceptance suites for the
+  two behaviours most likely to regress silently.
+- The 4B-1 live-test verdict and the 6A-2 enablement record, both with run ids and evidence,
+  in `todo/2026-08-09-v1-implementation.md`.
+
+### Notes
+
+- **The composed CI run is now validated**, which is the claim 0.1.0 explicitly declined to
+  make: session-flow loaded via `--plugin-dir` inside `claude-code-action`, gatekeeper
+  committing from CI, and the dashboard round-trip all passed on 2026-08-13.
+- One pilot unit runs `ops-sweep` on `0 6 * * 1-5`; its one-week watch closes 2026-08-21.
+  Widening enrolment is a decision to be made after it, not a consequence of this release.
+  Attention, not tokens, is the binding constraint (spec §12).
+- The `0.1.0` git tag was never cut — the shipping session got `HTTP 403` on `refs/tags/*`.
+  `0.2.0` is therefore this repository's first tag; 0.1.0 remains identifiable by its commits.
+
 ## [0.1.0] — 2026-08-10
 
 First release. The multi-repo operations layer for Claude Code, companion to session-flow:
@@ -99,4 +167,5 @@ drafts; it never implements and never publishes.
   that validation and any schedule enablement are operator-in-the-loop steps tracked in
   `todo/SEQUENCE.md`. The portfolio and workspace depend on neither.
 
+[0.2.0]: https://github.com/matshoppenbrouwers/session-ops/releases/tag/v0.2.0
 [0.1.0]: https://github.com/matshoppenbrouwers/session-ops/releases/tag/0.1.0

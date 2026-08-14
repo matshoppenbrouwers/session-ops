@@ -5,7 +5,12 @@ All notable changes to session-ops are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this
 project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.3.0] — 2026-08-14
+
+The three-plugin alignment release: every remaining finding from the 2026-08-14
+session-flow / session-scribe / session-ops review, landed. Both templates moved
+(triage v10, sweep v9) — re-run `/ops-enroll` on enrolled units to pick them up;
+the portfolio flags a stale install.
 
 ### Fixed
 
@@ -13,8 +18,31 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   session-scribe's `SessionEnd` hook comments on one agent-log issue per repo; if that log repo is
   itself an enrolled unit, opening or reopening the issue fired a triage run that read a work log —
   "what was asked, what was done, what is still open" — as a human's intake request. Companion to
-  session-scribe's SEQ-035, which labels the issue at creation. Re-run `/ops-enroll` on enrolled
-  units to pick up the new template; the portfolio flags a stale install.
+  session-scribe's SEQ-035, which labels the issue at creation.
+- The registry resolves as `ops.json` in the Claude config directory — `$CLAUDE_CONFIG_DIR` if
+  set, else `~/.claude` — in `ops-portfolio.py`'s `--registry` default and all five skills,
+  mirroring session-scribe's rule for `scribe.json` so the two registries always share a
+  directory. Previously hardcoded to `~/.claude/ops.json`, which put them in different
+  directories on any machine that sets the variable (SEQ-017).
+- The sweep's checked-box enqueue carries the `[auto]` provenance marker (`ops-sweep.yml`
+  template version 8). Step 2 invokes add-task directly, bypassing gatekeeper's shipped
+  `[auto]` setter, so a bot-enqueued entry arrived unmarked and could outrank a manual entry
+  at equal priority in `/session-next` — defeating the ordering rule the marker exists for
+  (SEQ-020).
+
+### Added
+
+- `/ops-init` prefills a new unit's `repo` from `scribe.json`'s `projects.<path>.github.repo`
+  when the path is registered there. scribe.json is the senior source for the path→`owner/name`
+  fact; the duplication stays deliberate — a registration-time prefill, never a runtime
+  dependency (SEQ-018).
+- The pinned dashboard issue links the unit's session-scribe agent-log issue (`ops-sweep.yml`
+  template version 9): baked at enroll from `scribe.json`'s `github.log_repo` + `github.log_issue`,
+  skipped silently when unmapped, preserved verbatim by every sweep rewrite — "what happened
+  lately" one tap from "what needs attention" (SEQ-021).
+- README documents the session-scribe degradation row and the combined notification picture
+  for a repo running all three plugins: scribe's per-session comments dominate; ops' recurring
+  writes are `[skip ci]` commits and dashboard body edits, which notify no one (SEQ-019).
 
 ## [0.2.0] — 2026-08-14
 

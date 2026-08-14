@@ -176,7 +176,7 @@ The audit trail a future opt-in "implement ready tasks → draft PR" mode would 
 
 ## Status
 
-v1 (0.2.0). Both operational validations 0.1.0 listed as outstanding have now run. The composed CI path (`--plugin-dir` loading session-flow inside `claude-code-action`, gatekeeper committing from CI, the dashboard round-trip) executed end-to-end on 2026-08-13 and passed every check. One unit has run on a live schedule since 2026-08-14, the first unattended sweep landing green that morning; its one-week watch closes 2026-08-21, and widening enrolment is the deliberate decision on the far side of it.
+v1 (0.3.0). Both operational validations 0.1.0 listed as outstanding have now run. The composed CI path (`--plugin-dir` loading session-flow inside `claude-code-action`, gatekeeper committing from CI, the dashboard round-trip) executed end-to-end on 2026-08-13 and passed every check. One unit has run on a live schedule since 2026-08-14, the first unattended sweep landing green that morning; its one-week watch closes 2026-08-21, and widening enrolment is the deliberate decision on the far side of it.
 
 **Both templates still install manual-dispatch-only.** That is the shipped default for everyone and it has not changed — enabling a schedule is a separate, attended act on a unit you have decided to put on the clock, which is the posture the pilot went through. One validated pilot is not a recommendation to enrol a portfolio; the meta-risk in spec §12 is attention, and it is real.
 

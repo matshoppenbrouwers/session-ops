@@ -1,11 +1,11 @@
 ---
 name: ops-init
-description: Create the session-ops registry (~/.claude/ops.json) and the private local workspace that every other ops skill depends on — units keyed by absolute path, budget ceiling, and an offered style-pack scaffold. Generated state never enters the public repo. Run once when adopting session-ops. Triggers on "/ops-init" or when user says "set up session-ops", "create the ops registry", or another ops skill reports the registry or workspace is missing.
+description: Create the session-ops registry (ops.json in the Claude config directory) and the private local workspace that every other ops skill depends on — units keyed by absolute path, budget ceiling, and an offered style-pack scaffold. Generated state never enters the public repo. Run once when adopting session-ops. Triggers on "/ops-init" or when user says "set up session-ops", "create the ops registry", or another ops skill reports the registry or workspace is missing.
 ---
 
 # Ops Init
 
-Create the two pieces of private state every other session-ops skill depends on: the **registry** (`~/.claude/ops.json`) and the **workspace** (a plain local directory for everything generated).
+Create the two pieces of private state every other session-ops skill depends on: the **registry** — `ops.json` in the Claude config directory (`$CLAUDE_CONFIG_DIR` if set, else `~/.claude`; the same resolution rule session-scribe uses for `scribe.json`) — and the **workspace** (a plain local directory for everything generated).
 
 **Announce:** "Using ops-init to create the ops registry and workspace."
 
@@ -25,7 +25,7 @@ Create the two pieces of private state every other session-ops skill depends on:
 
 ### Step 1: Ask where the workspace lives
 
-Ask the user for the workspace path (Non-Negotiable 1). If `~/.claude/ops.json` already exists, read it, report what is already configured, and skip to whichever steps are incomplete.
+Ask the user for the workspace path (Non-Negotiable 1). If the registry already exists, read it, report what is already configured, and skip to whichever steps are incomplete.
 
 ### Step 2: Create the workspace
 
@@ -37,7 +37,7 @@ The workspace holds everything generated (`PORTFOLIO.md`, `runs.jsonl`, `drafts/
 
 ### Step 3: Write the registry
 
-Write `~/.claude/ops.json`:
+Write the registry (`ops.json` in the Claude config directory):
 
 ```json
 {

@@ -11,7 +11,7 @@
 # Installed by /ops-enroll at .github/ops-guard.sh.
 #
 # Environment (both baked into the workflow env by /ops-enroll from the
-# registry — CI cannot read ~/.claude/ops.json):
+# registry — CI cannot read ops.json):
 #   OPS_MAX_RUNS_PER_DAY  account-wide cap, from budget.max_ci_runs_per_day
 #                         (default 12; 0 disables the agent entirely — the
 #                         documented way to test the guard)

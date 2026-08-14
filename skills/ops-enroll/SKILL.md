@@ -16,14 +16,14 @@ Install the clock on one unit: two workflow templates, two deterministic scripts
 1. **The skill never writes secrets.** It checks whether `CLAUDE_CODE_OAUTH_TOKEN` exists on the repo and tells the user how to set it. It never generates, prints, echoes, or stores a token value — not in a file, not in a commit, not in the transcript.
 2. **Dispatch-only by default.** `schedule:` stays commented out unless the user explicitly says yes to the live trial (Step 6). Silence, hesitation, or "sure, whatever you think" is not a yes.
 3. **A unit that isn't registered, or doesn't follow session-flow conventions, is not enrolled.** No `.session-flow.json`, no SEQUENCE.md tracked in git, or no registry entry → stop, say what's missing, install nothing. The degradation matrix is explicit: workflows are not installed into a unit gatekeeper cannot work in.
-4. **The registry is read-only here.** `/ops-init` owns the registry write. Enroll reads `~/.claude/ops.json` and never edits it — to register a unit or change its cadence, re-run `/ops-init`.
+4. **The registry is read-only here.** `/ops-init` owns the registry write. Enroll reads the registry and never edits it — to register a unit or change its cadence, re-run `/ops-init`.
 5. **One unit per invocation.** No fan-out across units: real blast radius, no current need (spec §14).
 
 ## Workflow
 
 ### Step 1: Resolve and check the unit
 
-Read `~/.claude/ops.json`. Missing registry or workspace → stop and say **"run /ops-init"**.
+Read the registry — `ops.json` in the Claude config directory (`$CLAUDE_CONFIG_DIR` if set, else `~/.claude`). Missing registry or workspace → stop and say **"run /ops-init"**.
 
 - `[unit]` given → match against `units` by absolute path key, key basename, or `repo` name.
 - `[unit]` omitted → resolve from the current directory by **longest-prefix matching** against the unit path keys.
@@ -106,7 +106,7 @@ In order, then one commit and push:
 1. **Copy both templates** into `.github/workflows/`, resolving `templates/` via `${CLAUDE_PLUGIN_ROOT}` where available.
 2. **Copy both scripts** to `.github/ops-guard.sh` and `.github/ops-heartbeat.sh`, and `chmod +x` them.
 3. **Bake the install-time values** into the copied workflows. Everything CI needs is written into the YAML here, because CI reads nothing else:
-   - **The env** in the `quota guard` step of both workflows, from the registry — CI cannot read `~/.claude/ops.json`, so these values only reach it by being written into the YAML:
+   - **The env** in the `quota guard` step of both workflows, from the registry — CI cannot read the registry, so these values only reach it by being written into the YAML:
      - `OPS_MAX_RUNS_PER_DAY` ← `budget.max_ci_runs_per_day`
      - `OPS_ENROLLED_REPOS` ← every `repo` value in `units` (space-separated). A repo-scoped token cannot read siblings; the guard degrades to the readable subset and logs a warning, which is why the cap is sized account-wide but enforced best-effort.
      - `OPS_DASHBOARD_ISSUE` ← the dashboard issue number, added to the heartbeat step's `env` in `ops-sweep.yml`.

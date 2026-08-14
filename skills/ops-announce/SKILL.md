@@ -23,7 +23,7 @@ Turn a shipped release into announcement copy the user can edit and publish them
 
 ### Step 1: Resolve the unit and the version
 
-Read `~/.claude/ops.json`. If it is missing, stop and say **"run /ops-init"**.
+Read the registry — `ops.json` in the Claude config directory (`$CLAUDE_CONFIG_DIR` if set, else `~/.claude`). If it is missing, stop and say **"run /ops-init"**.
 
 - `unit` given → match against the registry `units`: an absolute path key, its basename, or the entry's `repo` name all resolve.
 - `unit` omitted → resolve from the current directory by **longest-prefix matching** against the unit path keys.

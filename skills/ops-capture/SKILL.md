@@ -23,7 +23,7 @@ Write one raw item into a unit's inbox and push it — the idea is in the pipeli
 
 ### Step 1: Resolve the unit
 
-Read `~/.claude/ops.json`. If it is missing, stop and say **"run /ops-init"**.
+Read the registry — `ops.json` in the Claude config directory (`$CLAUDE_CONFIG_DIR` if set, else `~/.claude`). If it is missing, stop and say **"run /ops-init"**.
 
 - `<unit>` given → match it against the registry's `units`: an absolute path key, the key's basename, or the entry's `repo` name all resolve.
 - `<unit>` omitted → resolve from the current directory by **longest-prefix matching** against the unit path keys (scribe's rule).

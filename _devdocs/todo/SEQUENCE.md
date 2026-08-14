@@ -23,3 +23,8 @@ Add entries with `/session-add-task` or `/session-gatekeeper`. Prepare raw ones 
 - [x] SEQ-015 P2: Bot commits end with `[skip ci]` so a direct push cannot fire a unit's deploy — resolves SEQ-014's original driver deterministically, without a branch, a PR, or `pull-requests: write` → research/2026-08-13-ops-draft-pr-mode.md
 - [x] SEQ-016 P2: `ops-portfolio.py` counts the escalations format-header example as an open escalation — `escalations_awaiting()` sums every `- [ ]` line, and `/ops-enroll` writes `- [ ] ESC-NNN (date, origin): summary` into the header of every unit's `escalations.md`, so an empty file reads as 1 awaiting on every unit forever and `/ops-status`'s verdict is permanently off by one → todo/tasks/0016-portfolio-phantom-escalation-count.md
 - [x] SEQ-014 P4: Draft-PR mode for the one case `[skip ci]` cannot reach — a protected `main` that forbids direct pushes. BLOCKED ON EVIDENCE: do not implement until an enrolled unit actually has one (Appendix C's posture). Design is done, not the build → research/2026-08-13-ops-draft-pr-mode.md
+- [x] SEQ-017 P2: Honor CLAUDE_CONFIG_DIR when resolving the registry → todo/tasks/0017-honor-claude-config-dir.md
+- [ ] SEQ-018 P3: Decide the registry cross-read with scribe.json → todo/tasks/0018-registry-cross-read-decision.md
+- [ ] SEQ-019 P3: Add the session-scribe degradation row and the combined-notification note → todo/tasks/0019-degradation-table-scribe-row.md
+- [ ] SEQ-020 P3: Sweep checked-box enqueue carries the auto-provenance marker → todo/tasks/0020-sweep-enqueue-carries-auto.md
+- [ ] SEQ-021 P3: Decide whether the dashboard links the unit's agent-log issue → todo/tasks/0021-dashboard-links-log-issue.md

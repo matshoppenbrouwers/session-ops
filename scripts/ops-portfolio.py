@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """ops-portfolio.py — deterministic portfolio aggregation (session-ops spec §8).
 
-Walks the registry (~/.claude/ops.json), inspects each unit's local clone,
+Walks the registry (ops.json in the Claude config directory), inspects each
+unit's local clone,
 and regenerates {workspace}/PORTFOLIO.md whole (write-only output — never
 merged with existing content), then appends one §9-schema line to
 {workspace}/runs.jsonl.
@@ -9,7 +10,8 @@ merged with existing content), then appends one §9-schema line to
 Python 3 stdlib only. Same input, same output, zero tokens.
 
 Flags:
-  --registry PATH   registry file (default ~/.claude/ops.json)
+  --registry PATH   registry file (default: ops.json under $CLAUDE_CONFIG_DIR
+                    when set, else ~/.claude/ops.json)
   --no-fetch        skip `git fetch` and every remote API call; all
                     remote-derived columns render "n/a"
 
@@ -61,6 +63,14 @@ def run_git(unit_path, *args):
 
 
 # ---------------------------------------------------------------- registry
+
+def default_registry():
+    """ops.json in the Claude config directory — $CLAUDE_CONFIG_DIR when set,
+    else ~/.claude. Mirrors session-scribe's resolution of scribe.json, so the
+    two registries always share a directory."""
+    config_dir = os.environ.get("CLAUDE_CONFIG_DIR") or os.path.expanduser("~/.claude")
+    return os.path.join(config_dir, "ops.json")
+
 
 def load_registry(path):
     try:
@@ -553,9 +563,7 @@ def append_run(workspace, status, duration_s):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument(
-        "--registry", default=os.path.expanduser("~/.claude/ops.json")
-    )
+    parser.add_argument("--registry", default=default_registry())
     parser.add_argument("--no-fetch", action="store_true")
     args = parser.parse_args()
 

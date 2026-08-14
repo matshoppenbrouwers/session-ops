@@ -18,7 +18,7 @@ Five skills, three scripts, two workflow templates, zero agents.
 
 | Skill | Contract |
 |---|---|
-| `/ops-init` | Create the registry (`~/.claude/ops.json`) and the private local workspace. Workspace location is asked, never defaulted; `git init` and the style-pack scaffold are offered, never forced. |
+| `/ops-init` | Create the registry (`ops.json` in the Claude config directory) and the private local workspace. Workspace location is asked, never defaulted; `git init` and the style-pack scaffold are offered, never forced. |
 | `/ops-enroll` | Put one registered unit on the clock — both workflows, both scripts, the escalations file, the pinned dashboard issue — from one shown plan and a single approval. Installs manual-dispatch-only by default. Never writes secrets. |
 | `/ops-capture` | Write one raw item into a unit's `{todo}/inbox/` and push it immediately. Enqueue only: never triages, never touches SEQUENCE.md. |
 | `/ops-status` | Run the deterministic portfolio aggregation, regenerate `PORTFOLIO.md`, and give the one-paragraph verdict. |
@@ -136,7 +136,7 @@ Metrics are the free kind only: one `runs.jsonl` line per ops-launched run, with
 
 session-ops is public, so **nothing generated ever enters it.** The repo ships code, conventions, and `examples/ops.json`; every piece of real state lives on your machine:
 
-| Lives in the repo | Lives in `~/.claude/ops.json` and the workspace |
+| Lives in the repo | Lives in the registry (`ops.json`) and the workspace |
 |---|---|
 | Skills, scripts, templates, examples | The registry: units keyed by absolute path, `kind`, `cadence`, budget ceiling |
 | | `PORTFOLIO.md`, `runs.jsonl`, `drafts/` — all generated |
@@ -147,6 +147,8 @@ The workspace is a plain directory. `git init` on it is offered, never forced; p
 ## Degradation
 
 Coupling is by file convention in known locations. Absence never errors.
+
+The registry resolves as `ops.json` in the Claude config directory — `$CLAUDE_CONFIG_DIR` if set, else `~/.claude` — the same rule session-scribe uses for `scribe.json`, so the two registries always live in the same directory.
 
 | If this is absent | Then |
 |---|---|

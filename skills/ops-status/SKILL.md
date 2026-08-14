@@ -32,7 +32,7 @@ Where `CLAUDE_PLUGIN_ROOT` is unavailable, resolve `scripts/ops-portfolio.py` re
 
 ### Step 3: Read the regenerated portfolio
 
-Read `{workspace}/PORTFOLIO.md` (workspace path from `~/.claude/ops.json`). A unit marked `unreachable` means its local clone is missing — mention it in the verdict; it is not an error.
+Read `{workspace}/PORTFOLIO.md` (workspace path from the registry — `ops.json` in the Claude config directory, `$CLAUDE_CONFIG_DIR` if set, else `~/.claude`; the script resolves `--registry` the same way). A unit marked `unreachable` means its local clone is missing — mention it in the verdict; it is not an error.
 
 ### Step 4: Give the verdict
 
